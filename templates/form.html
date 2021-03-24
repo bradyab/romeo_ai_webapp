@@ -1,0 +1,25 @@
+<div class="middle-box text-center loginscreen animated fadeInDown">
+  <div>
+    <div>
+      <h1 class="logo-name"><img src="@routes.Assets.at("img/favicon.png")" alt=""></h1>
+    </div>
+
+    <h2>Welcome to Romeo.ai</h2>
+
+    <p>Instructions</p>
+    <p>1. Cmd + Shift + click <a href="https://www.facebook.com/v2.6/dialog/oauth?redirect_uri=fb464891386855067%3A%2F%2Fauthorize%2F&display=touch&state=%7B%22challenge%22%3A%22IUUkEUqIGud332lfu%252BMJhxL4Wlc%253D%22%2C%220_auth_logger_id%22%3A%2230F06532-A1B9-4B10-BB28-B29956C71AB1%22%2C%22com.facebook.sdk_client_state%22%3Atrue%2C%223_method%22%3A%22sfvc_auth%22%7D&scope=user_birthday%2Cuser_photos%2Cuser_education_history%2Cemail%2Cuser_relationship_details%2Cuser_friends%2Cuser_work_history%2Cuser_likes&response_type=token%2Csigned_request&default_audience=friends&return_scopes=true&auth_type=rerequest&client_id=464891386855067&ret=login&sdk=ios&logger_id=30F06532-A1B9-4B10-BB28-B29956C71AB1&ext=1470840777&hash=AeZqkIcf-NEW6vBd">here</a> to open the Facebook Tinder auth workflow</p>
+    <p>2. Cmd + Shift + C in that tab to open the developer console</p>
+    <p>3. If you don't see a "Continue" button, select the icon that looks like an iPhone in the upper left corner of the developer console ("Toggle device toolbar") and refresh the page.</p>
+    <p>4. Click "Continue" </p>
+    <p>5. At the top of the developer console, select the "network" tab, then select the "confirm/" entry in the table under "Name". Finally, select the "response" tab and copy the entire text string that appears underneath.</p>
+    <p>6. Paste the text below and press Submit.</p>
+
+    <form action="{{ url_for('submit') }}" method="post">
+      <textarea name="text" placeholder="<script type="text/javascript" nonce="p6wj4q5e">window.location.href="fb464891386855067:\/\/authorize\/#granted_scopes=user_birthday\u00252Cuser_likes\u00252Cuser_photos\u00252Cemail\u00252Cpublic_profile&denied_scopes=&signed_request=G4YZQwS8-hcJkc6gm6p0AvOCTnQ15Ud-QnSyKevrPak.eyJ1c2VyX2lkIjoiMTAwNDMzNDQzMjkyODQ5MCIsImNvZGUiOiJBUURfSk1kbzZMNVpLV1BzdmRWMURTSVdiTnVEREJnSTFaMWIweWs5dlZrcUhrZjZnRExhSTV5NVl5NTdBTHZaOTlhSGF3aDVsWVlRbThVSXR0d09tSlRzMkFaZ2ZWN2FINndMdmpEMEgwcUJySko4LXhGYjJXUUlraFhwR0F4YlBveXN3WDRydlVWX3JlOWRNeE5mVUZadDFlc3lmYXIzTk1WMVVkMEZHTnlYaDlHLTJ4ZS1XZWc5cTYwSFIySnpJMW42T05oZXhQQXY1VlN2Y3dIU3JBeml2MTMyVkNrYldYMlJjY25oZTJkZUJUTXlVVXQ1NHlnOXpCdDFkbTFKemlHZERqNnVySjlWRlg0RTAwRjlhWEdpTWFJMThNNFcxd25aaWg1SzdJYngyOU5NOFgxVThvdEE1Rk9tdkVHZzJmUlRfRWd6SEh4SW9hT19XMnZOZkR5XzUxOFhpdXBVc003STB6b2tNQTZZS0IwOFhPOGVKMHNyUlhRd050ZS1CbjJKV3A4STVCVS16RlNWbGp1QlFJRnIiLCJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZF9hdCI6MTYxNjUzOTg3MX0&access_token=EAAGm0PX4ZCpsBALszXXCYPMI76NXD045ZAL8ZBZCdrr2cUTgsOiijWgYleQVmOHOFTvZBUK9HpOE8vUntFE6s1iEXbiKFeuTkVvM73ErVcbwJwgc4W8H4DmaZBaf9niLLG4ZB06foXZCZCxZCkZBIMVKRhhlC9uRpjuGxVHQtBAxF8nUEcnS7TPSYecREFBEPE4ghnC6ZCbLQFaBoL1ZApSnifjU6yTneKs0xnuI7ayKZBBFXEIgZDZD&data_access_expiration_time=1624315871&expires_in=5184000&state=\u00257B\u002522challenge\u002522\u00253A\u002522IUUkEUqIGud332lfu\u0025252BMJhxL4Wlc\u0025253D\u002522\u00252C\u0025220_auth_logger_id\u002522\u00253A\u00252230F06532-A1B9-4B10-BB28-B29956C71AB1\u002522\u00252C\u002522com.facebook.sdk_client_state\u002522\u00253Atrue\u00252C\u0025223_method\u002522\u00253A\u002522sfvc_auth\u002522\u00257D";</script>"></textarea>
+      <input type="submit">
+    </form>
+
+    </div>
+  </div>
+</div>
+
