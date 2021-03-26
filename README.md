@@ -4,7 +4,7 @@
 - Simply press "submit" on the webpage to use the default facebook credentials. Follow the instructions on the site if you want to integrate your own tinder account.
 
 # Notes
-- The default facebook credentials are set using the instructions on the webpage, then setting that string as the placeholder for the textbox in `templates/form.html` so you don't have to ctrl-v it in every time. The facebook credentials appear to be valid for more than 24 hours.
+- The demo facebook credentials are set using the instructions on the webpage, then setting that string as the placeholder for the textbox in `templates/form.html` so you don't have to ctrl-v it in every time. The facebook credentials appear to be valid for more than 24 hours.
 - the repl will crash with inline matplotlib plots. When this happens, use the shell cmd `pkill init` to forcefully restart the repl. Prevent this with `import matplotlib;
 matplotlib.use('Agg')`
 - make a tinder account with a fake facebook acct, add some photos and a bio, and start swiping/sending messages so you have some data to play with and you can get to know your user
