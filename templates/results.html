@@ -1,41 +1,37 @@
 <!doctype html>
 
-<title>Romeo.ai</title>
-<section>
-	<h4>Your Tinder {{auth_status}}</h4>
-	<br/>
-		<h1>Your Profile Photos' Performance</h1>
+<body style="font-family: Courier New">
+	<section>
+		<h1>
+			Romeo.ai
+		</h1>
+		<h4 style="color:{{auth_color}};"> Your Tinder {{auth_status}}
+		</h4>
 		<br/>
-			<h2>The relative performance scores of your Tinder photos follows. The higher the score, the more often the photo is swiped
-				right on. You may want to replace your worst scoring photos!
-				<br/>
-					<br/>
-						<pre>Photo Rank     Swipe Right Rate</pre>
-			</h2>
-			<h2>
-				<pre>     <a href={{url_1}}>1</a>         {{score_1}} %</pre>
-			</h2>
+			<h1>Your Profile Photos' Relative Performance</h1>
 			<br/>
-				<h2>
-					<pre>     <a href={{url_2}}>2</a>         {{score_2}} %</pre>
-				</h2>
+				<h4>The higher the score, the more often the photo is swiped right on. The photos are in the same order as you would
+					see on your Tinder app.
+				</h4>
+				<h4>You may want to replace your worst scoring photos!</h4>
 				<br/>
-					<h2>
-						<pre>     <a href={{url_3}}>3</a>         {{score_3}} %</pre>
-					</h2>
 					<br/>
 						<h2>
-							<pre>     <a href={{url_4}}>4</a>         {{score_4}} %</pre>
+							<pre>Photo Rank     Swipe Right Rate</pre>
+						</h2>
+						<h2>
+							<pre>     <a href={{url_1}}>1</a>         {{score_1}} %</pre>
 						</h2>
 						<br/>
 							<h2>
-								<pre>     <a href={{url_5}}>5</a>         {{score_5}} %</pre>
+								<pre>     <a href={{url_2}}>2</a>         {{score_2}} %</pre>
 							</h2>
 							<br/>
 								<h2>
-									<pre>     <a href={{url_6}}>6</a>         {{score_6}} %</pre>
+									<pre>     <a href={{url_3}}>3</a>         {{score_3}} %</pre>
 								</h2>
 								<br/>
+<<<<<<< HEAD
 									<h1>Your Opening Line Performance</h1>
 									<img src="data:image/png;base64, {{ opener_plot }}">
 								<br/>
@@ -46,5 +42,33 @@
 								<h1>Word Cloud of Your Conversations When You Had Long Conversations</h1>
 								<img src="data:image/png;base64, {{ long_convo_word_cloud }}">
 								
+=======
+									<h2>
+										<pre>     <a href={{url_4}}>4</a>         {{score_4}} %</pre>
+									</h2>
+									<br/>
+										<h2>
+											<pre>     <a href={{url_5}}>5</a>         {{score_5}} %</pre>
+										</h2>
+										<br/>
+											<h2>
+												<pre>     <a href={{url_6}}>6</a>         {{score_6}} %</pre>
+											</h2>
+											<br/>
+												<h1>Relative Performance of Your Opening Lines</h1>
+												<h4>0 on the y-axis is your average response rate</h4>
+												<img src="data:image/png;base64, {{ plot_url }}">
+								<br/>
+								<h1>Word Cloud of Your Texts When You Were Ghosted</h1>
+								<h4>These may be topics to avoid in the future</h4>
+								<img src="data:image/png;base64, {{ ghosted_cloud_url }}">
+
+															<br/>
+								<h1>Word Cloud of Your Longest Conversations</h1>
+								<h4>These may be topics to focus on in the future</h4>
+								<img src="data:image/png;base64, {{ long_convo_cloud_url }}">
+								<h1><a href="https://forms.gle/4kKFnHGRdFiPErJf8">Tell us what you think so we can improve Romeo.ai! :)</a></h1>
+>>>>>>> origin/brady2
 
 </section>
+</body>
