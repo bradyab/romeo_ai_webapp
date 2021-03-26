@@ -132,7 +132,7 @@ def submit():
 
 		old_messages_df = pd.DataFrame()
 		n = 0
-		for match in user_updates["matches"]:
+		for match in user_updates["matches"]:      
 			match_name = match.get("person").get("name")
 			match_bio = match.get("person").get("bio")
 			if get_extra_match_info:
