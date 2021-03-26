@@ -235,7 +235,7 @@ def submit():
                     #                 nn = 1
                     #                 messages_df.loc[row_idx, "is_opener"]
                     #                 print(group_idx[0] == row["from"])
-					# . this could probably be refactored as a bunch of .applys
+                    # . this could probably be refactored as a bunch of .applys
                     if messages_df.loc[row_idx, "is_opener"] == 1:
                         # fuzzy pattern matching
                         messages_df.loc[
@@ -320,7 +320,7 @@ def submit():
 
             # messages_df[["message", "match_bio", "bio_ref", "bio_ref_str"]][((messages_df["is_opener"] == 1))]
 
-			means_dict = get_opener_plot_data(messages_df, get_extra_match_info)
+            means_dict = get_opener_plot_data(messages_df, get_extra_match_info)
             # opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
 
             # plot opener performance
