@@ -16,6 +16,7 @@ app = Flask(__name__)
 
 print("Helloworld")
 
+
 @app.route('/')
 def index():
     return render_template('form.html')
@@ -237,7 +238,7 @@ def submit():
                     #                 nn = 1
                     #                 messages_df.loc[row_idx, "is_opener"]
                     #                 print(group_idx[0] == row["from"])
-					# . this could probably be refactored as a bunch of .applys
+                    # . this could probably be refactored as a bunch of .applys
                     if messages_df.loc[row_idx, "is_opener"] == 1:
                         # fuzzy pattern matching
                         messages_df.loc[
@@ -293,7 +294,7 @@ def submit():
                                                write_col_name="bio_ref",
                                                ngrams_1=bio_ngrams,
                                                n=bio_ngrams_n)
-											   
+
                         if get_extra_match_info:
                             if row["match_school"]:
                                 fuzzy_string_match(
@@ -321,20 +322,23 @@ def submit():
                             row_idx,
                             "long_convo"] = 1 if len(group) > 10 else 0
 
-            # messages_df[["message", "match_bio", "bio_ref", "bio_ref_str"]][((messages_df["is_opener"] == 1))]
-			
-			means_dict = get_opener_plot_data(messages_df, get_extra_match_info)
-            # opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
+                        # messages_df[["message", "match_bio", "bio_ref", "bio_ref_str"]][((messages_df["is_opener"] == 1))]
 
-            # plot opener performance
-            opener_plot = get_opener_plot(means_dict)
+                        means_dict = get_opener_plot_data(
+                            messages_df, get_extra_match_info)
+                        # opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
 
-            ##### wordclouds
-            long_convo_word_cloud = make_cloud(messages_df["message_lower_case"]
-                                              [messages_df["long_convo"] == 1])
-            ghosted_word_cloud = make_cloud(messages_df["message_lower_case"][
-                (messages_df["got_response"] == 0)
-                & (messages_df["from"] == user_id)])
+                        # plot opener performance
+                        opener_plot = get_opener_plot(means_dict)
+
+                        ##### wordclouds
+                        long_convo_word_cloud = make_cloud(
+                            messages_df["message_lower_case"][
+                                messages_df["long_convo"] == 1])
+                        ghosted_word_cloud = make_cloud(
+                            messages_df["message_lower_case"][
+                                (messages_df["got_response"] == 0)
+                                & (messages_df["from"] == user_id)])
 
         return render_template(
             'results.html',
