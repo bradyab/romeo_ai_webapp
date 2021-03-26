@@ -12,3 +12,4 @@ matplotlib.use('Agg')`
 - auth flow is hacky for now - We have to be careful to do any FB auth in browser to avoid people giving us their login info (security/trust hazard) and make sure we aren't incurring any facebook activity from replits servers (which, due to their obscure location, will trigger a suspicious activity FB security flag and force a password reset).
 - for this reason, it also seems that you should only login to facebook from the same location that the account in question normally logs in from
 - get_fb_id() calls some other FB API and is still called from main.py (i.e. replit's servers). Doesn't look like this one will force a password reset yet. Should be okay since this has been used since 3/23 with no issues
+- The repl.it IDE is kinda wonky - if you get `TabError: inconsistent use of tabs and spaces in indentation` errors, open the code in VSCode, hit Ctrl-P and select `convert indentation to spaces` to fix
