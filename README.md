@@ -9,7 +9,6 @@
 =======
 # Developer Notes
 - bradyab/romeo.ai is our "prod" server, to be used for demos with customers. Please fork this repl to make changes and only merge them back once they've been properly vetted
->>>>>>> origin/brady
 - The default facebook credentials are set using the instructions on the webpage, then setting that string as the placeholder for the textbox in `templates/form.html` so you don't have to ctrl-v it in every time. The facebook credentials appear to be valid for more than 24 hours.
 - the repl will crash with inline matplotlib plots. When this happens, use the shell cmd `pkill init` to forcefully restart the repl. Prevent this with `import matplotlib;
 matplotlib.use('Agg')`
