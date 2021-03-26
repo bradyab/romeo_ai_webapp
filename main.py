@@ -291,6 +291,7 @@ def submit():
                                                write_col_name="bio_ref",
                                                ngrams_1=bio_ngrams,
                                                n=bio_ngrams_n)
+
                         if get_extra_match_info:
                             if row["match_school"]:
                                 fuzzy_string_match(
@@ -319,7 +320,6 @@ def submit():
                             "long_convo"] = 1 if len(group) > 10 else 0
 
             # messages_df[["message", "match_bio", "bio_ref", "bio_ref_str"]][((messages_df["is_opener"] == 1))]
-
             means_dict = get_opener_plot_data(messages_df, get_extra_match_info)
             # opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
 
