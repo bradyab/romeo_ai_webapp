@@ -20,15 +20,6 @@ sp = spacy.load('en_core_web_sm')
 stop_words = sp.Defaults.stop_words | set(["", " "])
 
 
-def get_fb_id(access_token):
-    if "error" in access_token:
-        return {"error": "access token could not be retrieved"}
-    """Gets facebook ID from access token"""
-    req = requests.get('https://graph.facebook.com/me?access_token=' +
-                       access_token)
-    return req.json()["id"]
-
-
 def get_photo_scores(user_photos):
     ranking = 0
     num_non_photos = 0
