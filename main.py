@@ -5,68 +5,76 @@ from pprint import pprint
 import json
 import pandas as pd
 import sys
+import matplotlib
+# prevent inline printing, which crashes the repl
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import tinder_api
+from features import *
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
     return render_template('form.html')
 
-def get_fb_id(access_token):
-    if "error" in access_token:
-        return {"error": "access token could not be retrieved"}
-    """Gets facebook ID from access token"""
-    req = requests.get(
-        'https://graph.facebook.com/me?access_token=' + access_token)
-    return req.json()["id"]
 
 from datetime import datetime
 import pytz
 
+
 @app.route('/submit', methods=['POST'])
 def submit():
 	# get fb token and ID from user input
-	fb_access_token = re.search(r"access_token=([\w\d]+)", request.form['text']).groups()[0]
-	# fb_user_id = '1004334432928490'
+	fb_access_token = re.search(r"access_token=([\w\d]+)",
+								request.form['text']).groups()[0]
 	fb_user_id = get_fb_id(fb_access_token)
-	# get tinder token and update api headers 
+	print(fb_user_id)
+	print(fb_access_token)
+	# get tinder token and update api headers
 	# tinder_api.get_auth_token(fb_access_token, fb_user_id)
-	# To check you are authorized 
-	# print("auth verified: {}".format(tinder_api.authverif(fb_access_token, fb_user_id)))
+	# To check you are authorized
+	auth_status = "was successfully authorized!" if tinder_api.authverif(
+		fb_access_token, fb_user_id) == True else "failed to authorize :("
 
-	# save to file to reduce frequency of API calls 
-	my_profile = tinder_api.get_self()
+	# save to file to reduce frequency of API calls
+	user_profile = tinder_api.get_self()
 	# all_matches = tinder_api.all_matches()
-	updates = tinder_api.get_updates()
+	user_updates = tinder_api.get_updates()
+	user_id = user_profile["_id"]
+	###### saving user data
+	# file = open('user_data.json')
+	# user_data = json.load(file)
+	
 
-    ###### saving user data
+	# user = user_data["Billy"]
+	# for name in ["profile", "updates"]: # "matches"
+	#     # TODO: matches is a subset of updates i think, eliminate
+	#     if name not in user:
+	#         user[name] = []
+
+	# # my bio, photo scores, and my matches' bios change over time so we want to save time series data
 	# now = str(datetime.now(pytz.utc))
+	# user["profile"].append(user_profile)
+	# user["profile"][-1]["romeo_ai_saved_at"] = now
+	# user["updates"] = [user["updates"]]
+	# user["updates"].append(user_updates)
+	# user["updates"][-1]["romeo_ai_saved_at"] = now
+	# user_data[user_id] = user
 
-    # file = open('user_data.json')
-    # user_data = json.load(file)
-    # user = user_data["Billy"]
 
-    # # user = user_data["Billy"]["profile"]
-    # for name in ["profile", "updates"]: # "matches"
-    #     # TODO: matches is a subset of updates i think, eliminate
-    #     if name not in user:
-    #         user[name] = []
+	###############
+	# from replit import db
 
-    # # my bio, photo scores, and my matches' bios change over time so we want to save time series data
-    # user["profile"].append(my_profile)
-    # user["profile"][-1]["romeo_ai_saved_at"] = now
-    # user["updates"] = [user["updates"]]
-    # user["updates"].append(updates)
-    # user["updates"][-1]["romeo_ai_saved_at"] = now
-    # # user["matches"] = all_matches
-    # # user["matches"][len(user["matches"]) - 1]["romeo_ai_saved_at"] = now
+	# with open('user_data.json', 'w') as fp:
+	#     json.dump(user_data, fp, default=str)
+	# # TODO: remove duplicate entries. convert to csv?
 
 	####### requires time series saved data
 
-    # def plot_gb_time_series(df, ts_name, gb_name, value_name, figsize=(20,7), title=None):
+	# def plot_gb_time_series(df, ts_name, gb_name, value_name, figsize=(20,7), title=None):
 	# 	'''
 	# 	Runs groupby on Pandas dataframe and produces a time series chart.
 
@@ -103,7 +111,7 @@ def submit():
 	# 	_ = plt.show()
 
 	# 	photo_df = pd.DataFrame()
-	# 	for date in my_profile:
+	# 	for date in user_profile:
 	# 		timestamp_str = date["romeo_ai_saved_at"]
 	# 		for picture in date["photos"]:
 	# 				if picture['type'] != 'image' or "score" not in picture.keys():
@@ -112,32 +120,454 @@ def submit():
 	# 		#         rank = int(idx) # rank as given by the API can change
 	# 				score = picture["score"]
 	# 				photo_df = photo_df.append({"timestamp": datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S.%f%z'), "id": photo_id, "score": score}, ignore_index=True)
-				
+
 	# 	# pprint(photo_df)
 	# 	plot_gb_time_series(photo_df, 'timestamp', 'id', 'score', figsize=(10, 5), title="Profile Photo Performance Over Time")
 
 	# 	total_photo_perf_df = photo_df[["score", "timestamp"]].groupby("timestamp").sum()
-	# import pdb; pdb.set_trace()
-	from PIL import Image
 
-	my_id = my_profile["_id"]
+	from PIL import Image
+	import pdb, traceback, sys
+
 	ranking = 0
 	num_non_photos = 0
-	return_var = "<h1>Your Profile Photos' Performance</h1><br/><h2>The relative performance scores of your Tinder photos follows. The higher the score, the more often the photo is swiped right on. You may want to replace your worst scoring photos!<br/><br/><pre>Photo Rank     Success Score</pre></h2>"
+	photo_scores = [
+		{
+			"url": "",
+			"score": ""
+		},
+		{
+			"url": "",
+			"score": ""
+		},
+		{
+			"url": "",
+			"score": ""
+		},
+		{
+			"url": "",
+			"score": ""
+		},
+		{
+			"url": "nan",
+			"score": "nan"
+		},
+		{
+			"url": "nan",
+			"score": "nan"
+		},
+	]
 
-	while ranking < len(my_profile['photos']) - num_non_photos:
-		for n, p in enumerate(my_profile['photos']):
+	while ranking < len(user_profile['photos']) - num_non_photos:
+		for n, p in enumerate(user_profile['photos']):
 			if p['type'] != 'image':
 				num_non_photos += 1
 				continue
 			score = p['score'] if "score" in p.keys() else "unknown"
 			Image.open(requests.get(p['url'], stream=True).raw)
-			return_var += '<h2><pre>     <a href="{}">{}</a>         {}</pre></h2><br/>'.format(p['url'], n, score)
+			photo_scores[n]['url'] = p["url"]
+			photo_scores[n]['score'] = score
 			ranking += 1
-	# password!23
 
+	############# opening lines
+	try:
+		# this takes a while and calls the tinder API many times if true
+		get_extra_match_info = False
 
-	return return_var
+		old_messages_df = pd.DataFrame()
+		n = 0
+		for match in user_updates["matches"]:
+			match_name = match.get("person").get("name")
+			match_bio = match.get("person").get("bio")
+			if get_extra_match_info:
+				# don't call this too much, lest we get banned
+				extra_match_info = tinder_api.get_person(
+					match.get("person").get("_id")).get("results")
+				n += 1
+				if extra_match_info:
+					# TODO: concat all jobs in list
+					# TODO: check spotify refs
+					match_school = ""
+					try:
+						for idx, school in enumerate(
+								extra_match_info.get("schools")):
+							match_school += extra_match_info.get(
+								"schools")[idx].get('name').lower()
+					except:
+						continue
+					try:
+						match_job_name = extra_match_info.get("jobs")[0].get(
+							'title').get('name').lower()
+					except:
+						match_job_name = ""
+					try:
+						match_job_company = extra_match_info.get("person").get(
+							"jobs")[0].get('company').get('name').lower()
+					except:
+						match_job_company = ""
+
+					match_job = match_job_name + match_job_company
+
+			for message in match['messages']:
+				if get_extra_match_info:
+					message.update({
+						"match_name": match_name,
+						"message_lower_case": message["message"],
+						"match_bio": match_bio,
+						"match_job": match_job,
+						"match_school": match_school
+					})
+				else:
+					message.update({
+						"match_name": match_name,
+						"message_lower_case": message["message"],
+						"match_bio": match_bio
+					})
+				old_messages_df = old_messages_df.append(message,
+														ignore_index=True)
+
+		# this can be empty if they haven't sent messages
+		if old_messages_df.empty:
+			pass
+		else:
+			old_messages_df["romeo_ai_user_id"] = user_id
+
+			import numpy as np
+			import math
+			import scipy.stats
+			from fuzzywuzzy import process, fuzz
+			import pprint
+			pd.set_option('display.max_colwidth', None)
+			pd.set_option('display.max_rows', None)
+
+			# TODO: not all matches have conversations??
+			messages_df = old_messages_df
+			messages_df["is_bucketed"], messages_df["is_hey"] = 0, 0
+			messages_df["school_ref"], messages_df[
+				"school_ref_str"], messages_df["bio_ref"], messages_df[
+					"bio_ref_str"], messages_df["job_ref"], messages_df[
+						"job_ref_str"] = "", "", "", "", "", ""
+
+			grouped = messages_df.groupby(['romeo_ai_user_id', 'match_id'])  #.apply()
+
+			bio_ngrams_n = 2
+			job_ngrams_n, school_ngrams_n = 1, 1
+
+			from nltk.util import ngrams
+			from collections import Counter
+			from itertools import chain
+			import string
+			import spacy
+
+			sp = spacy.load('en_core_web_sm')  #en-core-web-sm-abd') #
+			stop_words = sp.Defaults.stop_words | set(["", " "])
+
+			# match substrings in messages with those in bio, job, school, etc
+			def fuzzy_string_match(df, row_idx, read_col_name, write_col_name,
+								ngrams_1, n):
+				# get ngrams from message
+				#                                                     stringIn.translate(stringIn.maketrans("",""), string.punctuation)
+				ngrams_2 = ngrams(
+					df.loc[row_idx, "message_lower_case"].translate(
+						str.maketrans('', '', string.punctuation)).split(" "),
+					n)
+				# count occurrences of each n-gram in both strings
+				counter = Counter(chain(ngrams_1, ngrams_2))
+
+				# if any ngrams were found 2+ times,
+				if any(v > 1 for v in counter.values()):
+					joined = ""
+					# TODO: this needs optimization
+					for k, v in counter.items():
+						if v > 1:
+							for word in k:
+								# TODO: swap words with synonyms
+								# if the ngram occurs in both strings, record it
+								if word not in stop_words and word.lower(
+								) in df.loc[row_idx, read_col_name].lower(
+								) and word.lower() in df.loc[
+										row_idx, "message_lower_case"]:
+									joined += " " + word
+							# to separate ngrams for debug
+							if len(joined) > 1:
+								joined += ", "
+					if len(joined) > 1:
+						df.loc[row_idx, write_col_name] = 1
+						df.loc[row_idx, write_col_name + "_str"] = joined
+
+			# todo: capture openers with multiple messages within 5 minues of each other
+			# TODO: n of various lengths
+
+			for group_idx, group in grouped:
+				convo_depth = 0
+				for row_idx, row in group.iterrows():
+					# remove spam from Billy's tinder 
+					if row["from"] == '58324a72815c629704a4cfba' and (any([substring in row["message"] for substring in ["It would help*", "I'm building an app"]]) or\
+					(datetime.strptime(row["sent_date"].replace("Z",""), '%Y-%m-%dT%H:%M:%S.%f') >= datetime.strptime("2021-02-23T02:11:26.531", '%Y-%m-%dT%H:%M:%S.%f') and datetime.strptime(row["sent_date"].replace("Z",""), '%Y-%m-%dT%H:%M:%S.%f')<= datetime.strptime("2021-02-23T03:17:12.469", '%Y-%m-%dT%H:%M:%S.%f'))):
+						messages_df = messages_df.drop(index=row_idx)
+						continue
+
+					# collate bio, job, and school info 1x per match
+					if not convo_depth:
+						bio_ngrams = ngrams(
+							str(row["match_bio"]).lower().translate(
+								str.maketrans('', '',
+											string.punctuation)).split(" "),
+							bio_ngrams_n) if row["match_bio"] else ""
+
+						if get_extra_match_info:
+							job_ngrams = ngrams(
+								str(row["match_job"]).translate(
+									str.maketrans(
+										'', '',
+										string.punctuation)).split(" "),
+								job_ngrams_n) if row["match_job"] else ""
+							school_ngrams = ngrams(
+								str(row["match_school"]).translate(
+									str.maketrans(
+										'', '',
+										string.punctuation)).split(" "),
+								school_ngrams_n) if row["match_school"] else ""
+
+						messages_df.loc[row_idx, "is_opener"] = 1 if group_idx[
+							0] == row["from"] else 0
+
+					convo_depth += 1
+					#             if row["match_bio"] and "5 kids" in row["match_bio"]:
+					#                 nn = 1
+					#                 messages_df.loc[row_idx, "is_opener"]
+					#                 print(group_idx[0] == row["from"])
+
+					# calculate opener stats. this could probably be refactored as a bunch of .applys
+					if messages_df.loc[row_idx, "is_opener"] == 1:
+						# fuzzy pattern matching
+						messages_df.loc[
+							row_idx,
+							"match_name_in_message_token_set_ratio"] = fuzz.token_set_ratio(
+								row["match_name"], row["message"])
+						messages_df.loc[
+							row_idx,
+							"whats_up_partialratio"] = fuzz.partial_ratio(
+								"what's up", row["message_lower_case"])
+						messages_df.loc[row_idx,
+										"hey_sort"] = fuzz.token_sort_ratio(
+											"hey", row["message_lower_case"])
+						messages_df.loc[
+							row_idx, "hey_name_sort"] = fuzz.token_sort_ratio(
+								"hey " + row["match_name"], row["message"])
+
+						#         fuzz.token_set_ratio("hey " + row["match_name"], row["message"])
+						#         messages_df.loc[row_idx, "hey_match_name_wratio"] = fuzz.WRatio("hey " + row["match_name"], row["message"])
+						#         messages_df.loc[row_idx, "bio_wratio"] = fuzz.WRatio(row["match_bio"], row["message"])
+						#         messages_df.loc[row_idx, "fuzzratio"] = fuzz.ratio("hey " + row["match_name"], row["message"])
+						#         messages_df.loc[row_idx, "partialratio"] = fuzz.partial_ratio("hey " + row["match_name"], row["message"])
+						#         messages_df.loc[row_idx, "set"] = fuzz.token_set_ratio("hey " + row["match_name"], row["message"])
+
+						# fuzzy string match to bucket openers
+						# TODO: decide which should be mutually exclusive
+						if messages_df.loc[row_idx,
+										"whats_up_partialratio"] >= 90:
+							messages_df.loc[row_idx,
+											"is_whats_up"], messages_df.loc[
+												row_idx,
+												"is_bucketed"] = (1, 1)
+						elif messages_df.loc[
+								row_idx,
+								"hey_name_sort"] >= 70 and messages_df.loc[
+									row_idx, "is_bucketed"] == 0:
+							messages_df.loc[
+								row_idx, "is_hey_match_name"], messages_df.loc[
+									row_idx, "is_bucketed"] = (1, 1)
+						elif messages_df.loc[
+								row_idx, "hey_sort"] >= 55 and messages_df.loc[
+									row_idx, "is_bucketed"] == 0:
+							# for one-word responses we can be more precise
+							messages_df.loc[row_idx,
+											"is_hey"], messages_df.loc[
+												row_idx,
+												"is_bucketed"] = (1, 1)
+						if row["match_bio"]:
+							# TODO: FP with billy match bio "Looking for the Sokka to my Suki | Can probably beat you in Mario Kart 8 | Incredibly mediocre | 🇰🇷🇯🇵	"
+							fuzzy_string_match(messages_df,
+											row_idx,
+											read_col_name="match_bio",
+											write_col_name="bio_ref",
+											ngrams_1=bio_ngrams,
+											n=bio_ngrams_n)
+						if get_extra_match_info:
+							if row["match_school"]:
+								fuzzy_string_match(
+									messages_df,
+									row_idx,
+									read_col_name="match_school",
+									write_col_name="school_ref",
+									ngrams_1=school_ngrams,
+									n=school_ngrams_n)
+							if row["match_job"]:
+								fuzzy_string_match(messages_df,
+												row_idx,
+												read_col_name="match_job",
+												write_col_name="job_ref",
+												ngrams_1=job_ngrams,
+												n=job_ngrams_n)
+
+						# did they respond to the message?
+						this_msg_and_all_after = group[
+							group['sent_date'] >= row['sent_date']]
+						messages_df.loc[row_idx, "got_response"] = 1 if len(
+							this_msg_and_all_after["from"].unique()) > 1 else 0
+						messages_df.loc[
+							row_idx,
+							"long_convo"] = 1 if len(group) > 10 else 0
+
+			# messages_df[["message", "match_bio", "bio_ref", "bio_ref_str"]][((messages_df["is_opener"] == 1))]
+
+			# map col names to axis labels
+			display_name_mapping = {
+				"bio reference": "bio_ref",
+				"hey": "is_hey",
+				"hey <name>": "is_hey_match_name",
+				"what's up": "is_whats_up"
+			}
+			if get_extra_match_info:
+				display_name_mapping += {
+					"school reference": "school_ref",
+					"job reference": "job_ref"
+				}
+
+			# baseline opener response rate for this person
+			all_opener_mean = messages_df["got_response"][(
+				messages_df["is_opener"] == 1)].mean()
+
+			# calc mean and sample size for each bucket
+			means_dict = {}
+			for display_name, column_name in display_name_mapping.items():
+				mean_pct_diff = (messages_df["got_response"][
+					(messages_df["is_opener"] == 1) &
+					(messages_df[column_name] == 1)].mean() -
+								all_opener_mean) / all_opener_mean
+				samples = len(messages_df["got_response"]
+							[(messages_df["is_opener"] == 1)
+							& (messages_df[column_name] == 1)])
+				means_dict.update({display_name: [mean_pct_diff, samples]})
+
+			# TODO: this is inelegant, should be combined in previous data structure. currently putting means in a list to make iterating through them to find p_value easier
+			means_list = [data[0] for name, data in means_dict.items()]
+			means_std_dev = np.std(np.array(means_list))
+
+			# calc p_values for each bucket
+			# TODO: fix
+			# TODO: calc for all users, then display color coded leaderboard + user lines
+			for display_name, data in means_dict.items():
+				mean = data[0]
+				samples = data[1]
+				z_score = (mean - all_opener_mean) / (means_std_dev /
+													math.sqrt(samples))
+				p_value = scipy.stats.norm.pdf(
+					abs(z_score)
+				) * 2  # two - sided test since we can't be sure which direction the mean will move
+				means_dict[display_name].append(p_value)
+
+			# opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
+
+			# plot opener performance
+			x = [
+				key + "\n P-value: " + str(round(value[2], 3))
+				for key, value in means_dict.items()
+			]
+			y = [value[0] for value in means_dict.values()]
+			from io import BytesIO
+			import base64
+
+			img = BytesIO()
+
+			_ = plt.bar(x,y)
+			# _ = plt.xticks(rotation=45)
+			_ = plt.xlabel('Opener Category')
+			_ = plt.ylabel('Response Rate: % better than your average opener')
+
+			_ = plt.savefig(img, format='png')
+			_ = plt.close()
+			img.seek(0)
+			plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+
+			# add floating text annotations
+			# ax = fig.add_subplot(111)
+			# ax)
+			# for value in means_dict.values():
+			#     ax.text(x + 3, y + .25, "P-value: " + str(value[2]), color='blue', fontweight='bold')
+
+			##### wordclouds
+			from wordcloud import WordCloud, STOPWORDS 
+
+			# sp.Defaults.stop_words
+			import gensim
+			# stopwords = stopwords + set()
+			# iterate through the csv file 
+			def make_cloud(df):
+				gs_stopwords = gensim.parsing.preprocessing.STOPWORDS
+				sp_stopwords = sp.Defaults.stop_words
+				comment_words = '' 
+
+				custom_words = ["lol", "haha", "yeah", "oh", "u", "m", "s", "t", "guess", "weird", "start", "wbu", "week", "girl", "fun", "friend", "lot", "ohh", "lmao", "ok", "went", "fact", "help", "tho", "stuff", "think", "fact", "okay", "idk", "hey", "yes", "mean", "sorry", "going", "hmm", "right", "actually", "good", "cool", "know", "people", "work", "probably", "https"]
+				sets=[gs_stopwords, sp_stopwords, STOPWORDS, custom_words]
+
+				stopwords_list = [list(x) for x in sets]
+				stopwords = []
+				for lists in stopwords_list:
+					stopwords += lists
+					
+				for val in df: 
+
+					# typecaste each val to string 
+					val = str(val) 
+
+					# split the value 
+					tokens = val.split() 
+
+					# Converts each token into lowercase 
+					for i in range(len(tokens)): 
+						tokens[i] = tokens[i].lower() 
+
+					comment_words += " ".join(tokens)+" "
+
+				long_wordcloud = WordCloud(width = 800, height = 800, 
+								background_color ='white', 
+								stopwords = stopwords, 
+								min_font_size = 10).generate(comment_words) 
+
+				# generate the WordCloud image                        
+				img = BytesIO()
+				long_wordcloud.to_image().save(img, 'png')
+
+				return base64.b64encode(img.getvalue()).decode('utf8')
+
+			long_convo_cloud_url = make_cloud(messages_df["message_lower_case"][messages_df["long_convo"] == 1])
+			ghosted_cloud_url = make_cloud(messages_df["message_lower_case"][(messages_df["got_response"] == 0) & (messages_df["from"] == user_id)])
+
+		return render_template('results.html', 
+			auth_status = auth_status, 
+			score_0 = photo_scores[0]['score'], 
+			score_1 = photo_scores[1]['score'], 
+			score_2 = photo_scores[2]['score'], 
+			score_3 = photo_scores[3]['score'], 
+			score_4 = photo_scores[4]['score'], 
+			score_5 = photo_scores[5]['score'], 
+			url_0 = photo_scores[0]['url'], 
+			url_1 = photo_scores[1]['url'], 
+			url_2 = photo_scores[2]['url'], 
+			url_3 = photo_scores[3]['url'], 
+			url_4 = photo_scores[4]['url'], 
+			url_5 = photo_scores[5]['url'],
+			plot_url = plot_url,
+			long_convo_cloud_url = long_convo_cloud_url,
+			ghosted_cloud_url = ghosted_cloud_url,
+	)
+
+	except:
+		extype, value, tb = sys.exc_info()
+		traceback.print_exc()
+		pdb.post_mortem(tb)
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080)

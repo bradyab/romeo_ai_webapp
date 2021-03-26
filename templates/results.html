@@ -1,0 +1,42 @@
+<!doctype html>
+
+<title>Romeo.ai</title>
+<section>
+	<h4>Your Tinder {{auth_status}}</h4>
+	<br/>
+		<h1>Your Profile Photos' Performance</h1>
+		<br/>
+			<h2>The relative performance scores of your Tinder photos follows. The higher the score, the more often the photo is swiped
+				right on. You may want to replace your worst scoring photos!
+				<br/>
+					<br/>
+						<pre>Photo Rank     Success Score</pre>
+			</h2>
+			<h2>
+				<pre>     <a href={{url_0}}>0</a>         {{score_0}}</pre>
+				</h4>
+				<br/>
+					<h2>
+						<pre>     <a href={{url_1}}>1</a>         {{score_1}}</pre>
+					</h2>
+					<br/>
+						<h2>
+							<pre>     <a href={{url_2}}>2</a>         {{score_2}}</pre>
+						</h2>
+						<br/>
+							<h2>
+								<pre>     <a href={{url_3}}>3</a>         {{score_3}}</pre>
+							</h2>
+							<br/>
+								<h1>Your Opening Line Performance</h1>
+								<img src="data:image/png;base64, {{ plot_url }}">
+								<br/>
+								<h1>Word Cloud of Your Texts When You Were Ghosted</h1>
+								<img src="data:image/png;base64, {{ ghosted_cloud_url }}">
+
+															<br/>
+								<h1>Word Cloud of Your Texts When You Hit it Off</h1>
+								<img src="data:image/png;base64, {{ long_convo_cloud_url }}">
+								
+
+</section>
