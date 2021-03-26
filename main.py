@@ -320,7 +320,6 @@ def submit():
                             "long_convo"] = 1 if len(group) > 10 else 0
 
             # messages_df[["message", "match_bio", "bio_ref", "bio_ref_str"]][((messages_df["is_opener"] == 1))]
-            # blac
             means_dict = get_opener_plot_data(messages_df, get_extra_match_info)
             # opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
 

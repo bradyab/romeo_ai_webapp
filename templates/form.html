@@ -1,24 +1,28 @@
-<div class="middle-box text-center loginscreen animated fadeInDown">
-  <div>
-    <div>
-      <h1 class="logo-name"><img src="@routes.Assets.at("img/favicon.png")" alt=""></h1>
+<body style="font-family: Courier New">
+	<div class="middle-box text-center loginscreen animated fadeInDown">
+		<div>
+			<div>
+				<h1 class="logo-name"><img src="@routes.Assets.at("img/favicon.png")" alt=""></h1>
     </div>
 
     <h1>Welcome to Romeo.ai!</h1>
 
-    <p>This webapp integrates with your Tinder account to give you profile tips, stat tracking, and strategies to up your game.</p> 
-	<p>Authorizing your Tinder gives Romeo.ai access to your photos, matches, messages, and other data. Romeo.ai will not send messages or otherwise make alterations to your Tinder account.</p>
-	<p>Hit the submit button below to try the demo! Otherwise...</p>
+    <p>Our webapp integrates with your Tinder account to give you profile tips, stat tracking, and strategies to up your game.</p>
+
+	<h4 style="color:tomato;">Hit the submit button below to try the demo!</h4>
+	<h4 style="color:tomato;">To see analytics on your Tinder data, follow the instructions below...</h4>
+	<h2>Privacy Policy</h2>
+	<p>Authorizing your Tinder gives Romeo.ai access to your photos, matches, messages, and other data. Romeo.ai will not send messages or otherwise make alterations to your Tinder account, and your anonymized data will be used to improve Romeo.ai. No personally identifiable information will be associated with your individual messages.</p>
 	<h2>Connect Your Tinder Account</h2>
     <p>1. Cmd/Ctrl + Shift + click <a href="https://www.facebook.com/v2.6/dialog/oauth?redirect_uri=fb464891386855067%3A%2F%2Fauthorize%2F&display=touch&state=%7B%22challenge%22%3A%22IUUkEUqIGud332lfu%252BMJhxL4Wlc%253D%22%2C%220_auth_logger_id%22%3A%2230F06532-A1B9-4B10-BB28-B29956C71AB1%22%2C%22com.facebook.sdk_client_state%22%3Atrue%2C%223_method%22%3A%22sfvc_auth%22%7D&scope=user_birthday%2Cuser_photos%2Cuser_education_history%2Cemail%2Cuser_relationship_details%2Cuser_friends%2Cuser_work_history%2Cuser_likes&response_type=token%2Csigned_request&default_audience=friends&return_scopes=true&auth_type=rerequest&client_id=464891386855067&ret=login&sdk=ios&logger_id=30F06532-A1B9-4B10-BB28-B29956C71AB1&ext=1470840777&hash=AeZqkIcf-NEW6vBd">here</a> to open the Tinder authentication workflow via Facebook</p>
     <p>3. If you see a "Continue" button, click it and skip to 5. If you don't see "Continue", hit Cmd/Ctrl + Shift + C to open the developer console</p>
-	<p>4. Click the icon that looks like an iPhone in the upper left corner of the developer console ("Toggle device toolbar"), two times - not a double click. Picture here -> <a "https://imgur.com/a/zq8UjbkIt">here</a>. It should turn blue when selected. Refresh the page.</p> 
-    <p>4. "Continue" should now appear in the Facebook popup. Click it.</p>
-    <p>5. At the top of the developer console, select the "network" tab, then select the "confirm/" entry in the table under "Name". Finally, select the "response" tab and copy the entire text string that appears underneath.</p>
-    <p>6. Paste the text below and press Submit to authorize Romeo.ai access to your Tinder.</p>
+	<p>4. Make sure the <a href="https://imgur.com/a/zq8Ujbk">iPhone icon in the</a> upper left corner of the developer console is selected, then refresh.</p>
+    <p>4. "Continue" should now appear in the Facebook popup. Click it</p>
+    <p>5. At the top of the developer console, <a href="https://imgur.com/a/PQdnIPc">select the "network" tab</a>, then select the "confirm/" entry in the table under "Name". Finally, select the "response" tab and copy the entire text string that appears underneath.</p>
+    <p>6. Paste your copied text below and press "Submit" to give authorize your Tinder.</p>
 
     <form action="{{ url_for('submit') }}" method="post">
-      <textarea name="text" placeholder="<script type="text/javascript" nonce="9pF6859V">window.location.href="fb464891386855067:\/\/authorize\/#granted_scopes=user_birthday\u00252Cuser_likes\u00252Cuser_photos\u00252Cemail\u00252Cpublic_profile&denied_scopes=&signed_request=yYeXS0tLtJ1fh7X4a0UCLbftKJM5ks20gIRsiSUtjF0.eyJ1c2VyX2lkIjoiMTAwNDMzNDQzMjkyODQ5MCIsImNvZGUiOiJBUUE5S0lJaVlVdDFoXzRodkg3emxldTNsZzBzTWNlcUVTT2JVeDQwd040MUE1dXNJYjZrc19abmhMTGZjUld2ZHFOaXNSMDIyZWRXSi01TG5zMnNQS1VZRzJVaUF5bEVtbHhNWUVZOXkzbWNLdjNxd1NTbFFQc040TnRxY3VPbkVlTzVQUmptOU1SbEtQLVlsemFQQ0ZHM0FiaUhmeTFYVnFweUd1Rl85dUhoT0haaEwwdnJ4TVRsRVZFUC1RaVh5ZlVPeHFzeFBRZDJ4a3UtbmxVTlVmZ3RQc0NkTkQxOHFqRVJPenJJUkw5ZG9nUkFoZHlyQTNKMkdrRHB0cmlUTU9uSnhzZTJBVDZPWFpvMXAzd2dTTVBiQXVpZ1RZQWg3cW45cHpWWWw5bVk5NzZzejdscHVVX3NxbEdaU01tQW1QQ1l0aXJtV0JjMHRteWw4TElmXzdKaGRqYXZMYzFWd0phV3JCVHhEd3RLNFptTVgzTXg2WWRUcmpRelhMT1BEWUVBcXpOUklHVDFfbUw4SndIZGtLanUiLCJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZF9hdCI6MTYxNjYwNzI4NX0&access_token=EAAGm0PX4ZCpsBAD4j1WHa7hJwvLEXHWEMVZB9sjPBAB1AqHv58CD53Nq7bFxemmlS89eedKkDSWoAJclQA0afqlnf67M2ZAZBnnFloPbvi37hSV5zk2Wgod1PonRDmfSJFWeqjIOLuwvYVlPJae2gTbFQvBZBQAodY0GkUd0MGKctrH9gOCYj8v8B6sLZB2WmGBczX9z33bwVyy6Gm5dlmPeUvD2BEyPx1kvZBDO0989QZDZD&data_access_expiration_time=1624383285&expires_in=5116586&state=\u00257B\u002522challenge\u002522\u00253A\u002522IUUkEUqIGud332lfu\u0025252BMJhxL4Wlc\u0025253D\u002522\u00252C\u0025220_auth_logger_id\u002522\u00253A\u00252230F06532-A1B9-4B10-BB28-B29956C71AB1\u002522\u00252C\u002522com.facebook.sdk_client_state\u002522\u00253Atrue\u00252C\u0025223_method\u002522\u00253A\u002522sfvc_auth\u002522\u00257D";</script>"></textarea>
+      <textarea name="text"></textarea>
       <input type="submit">
     </form>
 
@@ -26,3 +30,5 @@
   </div>
 </div>
 
+
+</body>
