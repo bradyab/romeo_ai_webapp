@@ -1,14 +1,13 @@
 from flask import Flask, request, render_template
+import pdb, traceback, sys
 import requests
 import re
 from pprint import pprint
 import json
 import pandas as pd
 import sys
-import matplotlib
-# prevent inline printing, which crashes the repl
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+from datetime import datetime
+import pytz
 
 import tinder_api
 from features import *
@@ -21,156 +20,113 @@ def index():
     return render_template('form.html')
 
 
-from datetime import datetime
-import pytz
-
-
 @app.route('/submit', methods=['POST'])
 def submit():
-	# get fb token and ID from user input
-	fb_access_token = re.search(r"access_token=([\w\d]+)",
-								request.form['text']).groups()[0]
-	fb_user_id = get_fb_id(fb_access_token)
-	print(fb_user_id)
-	print(fb_access_token)
-	# get tinder token and update api headers
-	# tinder_api.get_auth_token(fb_access_token, fb_user_id)
-	# To check you are authorized
-	auth_status = "was successfully authorized!" if tinder_api.authverif(
-		fb_access_token, fb_user_id) == True else "failed to authorize :("
-
-	# save to file to reduce frequency of API calls
-	user_profile = tinder_api.get_self()
-	# all_matches = tinder_api.all_matches()
-	user_updates = tinder_api.get_updates()
-	user_id = user_profile["_id"]
-	###### saving user data
-	# file = open('user_data.json')
-	# user_data = json.load(file)
-	
-
-	# user = user_data["Billy"]
-	# for name in ["profile", "updates"]: # "matches"
-	#     # TODO: matches is a subset of updates i think, eliminate
-	#     if name not in user:
-	#         user[name] = []
-
-	# # my bio, photo scores, and my matches' bios change over time so we want to save time series data
-	# now = str(datetime.now(pytz.utc))
-	# user["profile"].append(user_profile)
-	# user["profile"][-1]["romeo_ai_saved_at"] = now
-	# user["updates"] = [user["updates"]]
-	# user["updates"].append(user_updates)
-	# user["updates"][-1]["romeo_ai_saved_at"] = now
-	# user_data[user_id] = user
-
-
-	###############
-	# from replit import db
-
-	# with open('user_data.json', 'w') as fp:
-	#     json.dump(user_data, fp, default=str)
-	# # TODO: remove duplicate entries. convert to csv?
-
-	####### requires time series saved data
-
-	# def plot_gb_time_series(df, ts_name, gb_name, value_name, figsize=(20,7), title=None):
-	# 	'''
-	# 	Runs groupby on Pandas dataframe and produces a time series chart.
-
-	# 	Parameters:
-	# 	----------
-	# 	df : Pandas dataframe
-	# 	ts_name : string
-	# 			The name of the df column that has the datetime timestamp x-axis values.
-	# 	gb_name : string
-	# 			The name of the df column to perform group-by.
-	# 	value_name : string
-	# 			The name of the df column for the y-axis.
-	# 	figsize : tuple of two integers
-	# 			Figure size of the resulting plot, e.g. (20, 7)
-	# 	title : string
-	# 			Optional title
-	# 	'''
-	# 	xtick_locator = matplotlib.dates.DayLocator(interval=1)
-	# 	xtick_dateformatter = matplotlib.dates.DateFormatter('%m/%d/%Y')
-	# 	fig, ax = plt.subplots(figsize=figsize)
-	# 	for key, grp in df.groupby([gb_name]):
-	# 			ax = grp.plot(ax=ax, kind='line', x=ts_name, y=value_name, label=key, marker='o')
-	# 	ax.xaxis.set_major_locator(xtick_locator)
-	# 	ax.xaxis.set_major_formatter(xtick_dateformatter)
-	# 	ax.autoscale_view()
-	# 	ax.legend(loc='upper left')
-	# 	_ = plt.xticks(rotation=90, )
-	# 	_ = plt.grid()
-	# 	_ = plt.xlabel('')
-	# 	_ = plt.ylim(0, df[value_name].max() * 1.25)
-	# 	_ = plt.ylabel(value_name)
-	# 	if title is not None:
-	# 			_ = plt.title(title)
-	# 	_ = plt.show()
-
-	# 	photo_df = pd.DataFrame()
-	# 	for date in user_profile:
-	# 		timestamp_str = date["romeo_ai_saved_at"]
-	# 		for picture in date["photos"]:
-	# 				if picture['type'] != 'image' or "score" not in picture.keys():
-	# 						continue
-	# 				photo_id = picture["id"]
-	# 		#         rank = int(idx) # rank as given by the API can change
-	# 				score = picture["score"]
-	# 				photo_df = photo_df.append({"timestamp": datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S.%f%z'), "id": photo_id, "score": score}, ignore_index=True)
-
-	# 	# pprint(photo_df)
-	# 	plot_gb_time_series(photo_df, 'timestamp', 'id', 'score', figsize=(10, 5), title="Profile Photo Performance Over Time")
-
-	# 	total_photo_perf_df = photo_df[["score", "timestamp"]].groupby("timestamp").sum()
-
-	from PIL import Image
-	import pdb, traceback, sys
-
-	ranking = 0
-	num_non_photos = 0
-	photo_scores = [
-		{
-			"url": "",
-			"score": ""
-		},
-		{
-			"url": "",
-			"score": ""
-		},
-		{
-			"url": "",
-			"score": ""
-		},
-		{
-			"url": "",
-			"score": ""
-		},
-		{
-			"url": "nan",
-			"score": "nan"
-		},
-		{
-			"url": "nan",
-			"score": "nan"
-		},
-	]
-
-	while ranking < len(user_profile['photos']) - num_non_photos:
-		for n, p in enumerate(user_profile['photos']):
-			if p['type'] != 'image':
-				num_non_photos += 1
-				continue
-			score = p['score'] if "score" in p.keys() else "unknown"
-			Image.open(requests.get(p['url'], stream=True).raw)
-			photo_scores[n]['url'] = p["url"]
-			photo_scores[n]['score'] = score
-			ranking += 1
-
-	############# opening lines
+	# start pdb on exception
 	try:
+		# get fb token and ID from user input
+		fb_access_token = re.search(r"access_token=([\w\d]+)",
+									request.form['text']).groups()[0]
+		fb_user_id = get_fb_id(fb_access_token)
+		print(fb_user_id)
+		print(fb_access_token)
+		# get tinder token and update api headers
+		# tinder_api.get_auth_token(fb_access_token, fb_user_id)
+		# To check you are authorized
+		auth_status = "was successfully authorized!" if tinder_api.authverif(
+			fb_access_token, fb_user_id) == True else "failed to authorize :("
+
+		# save to file to reduce frequency of API calls
+		user_profile = tinder_api.get_self()
+		# all_matches = tinder_api.all_matches()
+		user_updates = tinder_api.get_updates()
+		user_id = user_profile["_id"]
+		###### saving user data
+		# file = open('user_data.json')
+		# user_data = json.load(file)
+		
+
+		# user = user_data["Billy"]
+		# for name in ["profile", "updates"]: # "matches"
+		#     # TODO: matches is a subset of updates i think, eliminate
+		#     if name not in user:
+		#         user[name] = []
+
+		# # my bio, photo scores, and my matches' bios change over time so we want to save time series data
+		# now = str(datetime.now(pytz.utc))
+		# user["profile"].append(user_profile)
+		# user["profile"][-1]["romeo_ai_saved_at"] = now
+		# user["updates"] = [user["updates"]]
+		# user["updates"].append(user_updates)
+		# user["updates"][-1]["romeo_ai_saved_at"] = now
+		# user_data[user_id] = user
+
+
+		###############
+		# from replit import db
+
+		# with open('user_data.json', 'w') as fp:
+		#     json.dump(user_data, fp, default=str)
+		# # TODO: remove duplicate entries. convert to csv?
+
+		####### requires time series saved data
+
+		# def plot_gb_time_series(df, ts_name, gb_name, value_name, figsize=(20,7), title=None):
+		# 	'''
+		# 	Runs groupby on Pandas dataframe and produces a time series chart.
+
+		# 	Parameters:
+		# 	----------
+		# 	df : Pandas dataframe
+		# 	ts_name : string
+		# 			The name of the df column that has the datetime timestamp x-axis values.
+		# 	gb_name : string
+		# 			The name of the df column to perform group-by.
+		# 	value_name : string
+		# 			The name of the df column for the y-axis.
+		# 	figsize : tuple of two integers
+		# 			Figure size of the resulting plot, e.g. (20, 7)
+		# 	title : string
+		# 			Optional title
+		# 	'''
+		# 	xtick_locator = matplotlib.dates.DayLocator(interval=1)
+		# 	xtick_dateformatter = matplotlib.dates.DateFormatter('%m/%d/%Y')
+		# 	fig, ax = plt.subplots(figsize=figsize)
+		# 	for key, grp in df.groupby([gb_name]):
+		# 			ax = grp.plot(ax=ax, kind='line', x=ts_name, y=value_name, label=key, marker='o')
+		# 	ax.xaxis.set_major_locator(xtick_locator)
+		# 	ax.xaxis.set_major_formatter(xtick_dateformatter)
+		# 	ax.autoscale_view()
+		# 	ax.legend(loc='upper left')
+		# 	_ = plt.xticks(rotation=90, )
+		# 	_ = plt.grid()
+		# 	_ = plt.xlabel('')
+		# 	_ = plt.ylim(0, df[value_name].max() * 1.25)
+		# 	_ = plt.ylabel(value_name)
+		# 	if title is not None:
+		# 			_ = plt.title(title)
+		# 	_ = plt.show()
+
+		# 	photo_df = pd.DataFrame()
+		# 	for date in user_profile:
+		# 		timestamp_str = date["romeo_ai_saved_at"]
+		# 		for picture in date["photos"]:
+		# 				if picture['type'] != 'image' or "score" not in picture.keys():
+		# 						continue
+		# 				photo_id = picture["id"]
+		# 		#         rank = int(idx) # rank as given by the API can change
+		# 				score = picture["score"]
+		# 				photo_df = photo_df.append({"timestamp": datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S.%f%z'), "id": photo_id, "score": score}, ignore_index=True)
+
+		# 	# pprint(photo_df)
+		# 	plot_gb_time_series(photo_df, 'timestamp', 'id', 'score', figsize=(10, 5), title="Profile Photo Performance Over Time")
+
+		# 	total_photo_perf_df = photo_df[["score", "timestamp"]].groupby("timestamp").sum()
+
+		photo_scores = get_photo_scores(user_profile['photos'])
+
+		############# opening lines analysis
+
 		# this takes a while and calls the tinder API many times if true
 		get_extra_match_info = False
 
@@ -181,6 +137,7 @@ def submit():
 			match_bio = match.get("person").get("bio")
 			if get_extra_match_info:
 				# don't call this too much, lest we get banned
+				# TODO: save this info to DB. If data exists in DB, check DB for their info closest to the time of opener being sent. Don't add to DB unless values change
 				extra_match_info = tinder_api.get_person(
 					match.get("person").get("_id")).get("results")
 				n += 1
@@ -471,94 +428,26 @@ def submit():
 			# opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
 
 			# plot opener performance
-			x = [
-				key + "\n P-value: " + str(round(value[2], 3))
-				for key, value in means_dict.items()
-			]
-			y = [value[0] for value in means_dict.values()]
-			from io import BytesIO
-			import base64
-
-			img = BytesIO()
-
-			_ = plt.bar(x,y)
-			# _ = plt.xticks(rotation=45)
-			_ = plt.xlabel('Opener Category')
-			_ = plt.ylabel('Response Rate: % better than your average opener')
-
-			_ = plt.savefig(img, format='png')
-			_ = plt.close()
-			img.seek(0)
-			plot_url = base64.b64encode(img.getvalue()).decode('utf8')
-
-			# add floating text annotations
-			# ax = fig.add_subplot(111)
-			# ax)
-			# for value in means_dict.values():
-			#     ax.text(x + 3, y + .25, "P-value: " + str(value[2]), color='blue', fontweight='bold')
+			plot_url = get_opener_plot(means_dict)
 
 			##### wordclouds
-			from wordcloud import WordCloud, STOPWORDS 
-
-			# sp.Defaults.stop_words
-			import gensim
-			# stopwords = stopwords + set()
-			# iterate through the csv file 
-			def make_cloud(df):
-				gs_stopwords = gensim.parsing.preprocessing.STOPWORDS
-				sp_stopwords = sp.Defaults.stop_words
-				comment_words = '' 
-
-				custom_words = ["lol", "haha", "yeah", "oh", "u", "m", "s", "t", "guess", "weird", "start", "wbu", "week", "girl", "fun", "friend", "lot", "ohh", "lmao", "ok", "went", "fact", "help", "tho", "stuff", "think", "fact", "okay", "idk", "hey", "yes", "mean", "sorry", "going", "hmm", "right", "actually", "good", "cool", "know", "people", "work", "probably", "https"]
-				sets=[gs_stopwords, sp_stopwords, STOPWORDS, custom_words]
-
-				stopwords_list = [list(x) for x in sets]
-				stopwords = []
-				for lists in stopwords_list:
-					stopwords += lists
-					
-				for val in df: 
-
-					# typecaste each val to string 
-					val = str(val) 
-
-					# split the value 
-					tokens = val.split() 
-
-					# Converts each token into lowercase 
-					for i in range(len(tokens)): 
-						tokens[i] = tokens[i].lower() 
-
-					comment_words += " ".join(tokens)+" "
-
-				long_wordcloud = WordCloud(width = 800, height = 800, 
-								background_color ='white', 
-								stopwords = stopwords, 
-								min_font_size = 10).generate(comment_words) 
-
-				# generate the WordCloud image                        
-				img = BytesIO()
-				long_wordcloud.to_image().save(img, 'png')
-
-				return base64.b64encode(img.getvalue()).decode('utf8')
-
 			long_convo_cloud_url = make_cloud(messages_df["message_lower_case"][messages_df["long_convo"] == 1])
 			ghosted_cloud_url = make_cloud(messages_df["message_lower_case"][(messages_df["got_response"] == 0) & (messages_df["from"] == user_id)])
 
 		return render_template('results.html', 
 			auth_status = auth_status, 
-			score_0 = photo_scores[0]['score'], 
-			score_1 = photo_scores[1]['score'], 
-			score_2 = photo_scores[2]['score'], 
-			score_3 = photo_scores[3]['score'], 
-			score_4 = photo_scores[4]['score'], 
-			score_5 = photo_scores[5]['score'], 
-			url_0 = photo_scores[0]['url'], 
-			url_1 = photo_scores[1]['url'], 
-			url_2 = photo_scores[2]['url'], 
-			url_3 = photo_scores[3]['url'], 
-			url_4 = photo_scores[4]['url'], 
-			url_5 = photo_scores[5]['url'],
+			score_1 = photo_scores[0]['score'], 
+			score_2 = photo_scores[1]['score'], 
+			score_3 = photo_scores[2]['score'], 
+			score_4 = photo_scores[3]['score'], 
+			score_5 = photo_scores[4]['score'], 
+			score_6 = photo_scores[5]['score'], 
+			url_1 = photo_scores[0]['url'], 
+			url_2 = photo_scores[1]['url'], 
+			url_3 = photo_scores[2]['url'], 
+			url_4 = photo_scores[3]['url'], 
+			url_5 = photo_scores[4]['url'], 
+			url_6 = photo_scores[5]['url'],
 			plot_url = plot_url,
 			long_convo_cloud_url = long_convo_cloud_url,
 			ghosted_cloud_url = ghosted_cloud_url,
