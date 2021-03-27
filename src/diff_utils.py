@@ -20,7 +20,6 @@ Output:
 
 hellojupiter
 hellopluto
-Helloworld
 """
 
 from diff_match_patch import diff_match_patch
