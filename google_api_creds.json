@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "proud-stage-208706",
+  "private_key_id": "13243349b58202c604d316094c38bb8ec9e9b0c4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCJdufiblDxBkMc\n0ZUb+ikrFr0k5Ft2kP1lRnfBX9BiPaw7174dkyIXHVNX1A8yNKA0RR85R2gtcuIH\n1JPIbUTtjytp6B0Xb7PlNzXuBYcXzlu42+NRnKjChUEi9YrJSoRXWZTJ+EVqQDJC\npogXkQJG9D8lzLKb4x0GGQ9DnaNHScEhWmR0RDpnoqYGgbLhpJvuSI3sAOvWdkUO\nWAy3EBQhAMOh7rNLfWV2mPpImsCJ5zyxyCtJ/fQXHjWtqn9SGSZirdHsC2ekPQ0L\nUHKWj/6vbvw6tFvgUQwLisYZG2VSQXurzt3ENvN3qK6ee1lAyZHVFM7fHbmeKpiI\nGrFVdcAtAgMBAAECggEACZAC+4ZvDQVBf+y4cbTKTlwLllhoYGwfpH7tb79JkLv3\nkkYkzIvisDbzCEYRNI3ioyA31tU30wmN3buU+DlZtSjjfT+PXoT/v69CiidKSYaq\nbManHpNGThnU+SiZmf0cDbOGnTIvKgADPw20o+cLgIIXLnr55cw7xaPSowKBTEEk\nF9qPzq2UhH7tGvzhiyaBoGwx6OHACD70UoFgUQ3QueiFLivqvJxA9yrXSPNno2Ku\n78IBSH90kYQfRifCxxHjj/0vuJL0jkgxajl/mNyue4v0X4qWZWtmHXaOlMtouvQS\nAMm4IcOMenIIxbGBLEMRqnmGm9j3h9UIl/sHMa/OYQKBgQDCFlqpWRCEP4TANNFq\n4Rv/AJmCdWWRfUCd8DcsgXAF/Kl7NhEuQLfVWTiGUV+LU+PP3O5cjLLscKfEUc9d\nWeoOBy3UVc/RK6LKg7Ip0ILBRUSP5JJfMSkg/zc5QLe9gFEG0PWqot0fOFBWI0TX\nscqLQxR2SM4vPig1gGumLTChZQKBgQC1UJdrE0NBPhqNC+tvs0PISESd57eooCGT\nC51us2ZXt6v0xWxgkcNllWLJN5mC4cQt3AqoeKIQEyKswLRHYGwKm1wRs/So4Dfl\nvfqb+L3u2CTsutETFraEEmjF/St5MWj2aDNF6g72yBqtgwCpxukhUxl/bIA0IsVv\n8b/Sy8lbKQKBgQC+ILfffWg4pSCeSR9829hZDXVT3z0IMPLDxTXHW2Up+EDueiCK\ndsufLC+7JKu8CQn57itybkI4bINsRdglUpd99npmr0lNVrm6ORim7aOpQPnRG9Bn\nf/kSYfDvHP7hnHnDe5+s8K48jyXju9kMkxYfJi89UETq8rDg+FR8DXi+IQKBgBsh\nzzbPsB3APFrk8LtLWRZMcjAq75nFNKD7ePiK0gLIUmwTau9cgJ/f5eN0dX1XaXLv\nXYzuWFoNcv/k6lVQAXro2rMveaoXu2WeszTJ2So3n/bo0caIfJFw68rM4seE9E8D\nMsEAkHKvaQaT9vJw+IvrEoK16s1icqcYxvq1UhFZAoGBAJ5C34CA00HnZNiYjQjl\nNpozkDXNKxCt6shfRAqV3b7+auDvSv4YOz3EcrGWJ5S9r2mI5BwhLgPdgTT9M6+2\nD/LR0YwGmJuRO2ErX/pwHWGt7JM215b9LXXQNEBF+RI34IFhrrd3WzUFcbAsxj7s\nyZAIJTaRjKMGuuCmWLeohUXr\n-----END PRIVATE KEY-----\n",
+  "client_email": "romeo-ai@proud-stage-208706.iam.gserviceaccount.com",
+  "client_id": "109698681203252632057",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/romeo-ai%40proud-stage-208706.iam.gserviceaccount.com"
+}

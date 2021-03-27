@@ -16,6 +16,7 @@ replit = "^2.0.0"
 gensim = "^4.0.0"
 wordcloud = "^1.8.1"
 diff-match-patch = "^20200713"
+# google-cloud-sdk = "^300.0.0"
 
 [tool.poetry.dev-dependencies]
 
