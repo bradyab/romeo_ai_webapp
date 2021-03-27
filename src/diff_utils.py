@@ -7,31 +7,7 @@ https://github.com/google/diff-match-patch
 
 These utility functions are simply wrappers around the diff library to server our purposes from the client as simply as possible.
 
-Here is an example of how it works:
-
-Code:
-
-text0 = ""
-text1 = "hellojupiter"
-text2 = "hellopluto"
-
-dmp = diff_match_patch()
-patches = dmp.patch_make(text0, text1)
-diff1 = dmp.patch_toText(patches)
-
-patches = dmp.patch_make(text1, text2)
-diff2 = dmp.patch_toText(patches)
-
-patches = dmp.patch_fromText(diff1)
-text1_generated, _ = dmp.patch_apply(patches, text0)
-
-patches = dmp.patch_fromText(diff2)
-text2_generated, _ = dmp.patch_apply(patches, text1)
-
-print(diff1)
-print(diff2)
-print(text1_generated)
-print(text2_generated)
+Here is the output of the demo function:
 
 Output:
 @@ -0,0 +1,12 @@
