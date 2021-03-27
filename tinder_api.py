@@ -26,19 +26,19 @@ def get_fb_id(access_token):
 
 def authorize(form_input):
     # get fb token and ID from user
-    revised_form_input = '<script type="text/javascript" nonce="9pF6859V">window.location.href="fb464891386855067:\/\/authorize\/#granted_scopes=user_birthday\u00252Cuser_likes\u00252Cuser_photos\u00252Cemail\u00252Cpublic_profile&denied_scopes=&signed_request=yYeXS0tLtJ1fh7X4a0UCLbftKJM5ks20gIRsiSUtjF0.eyJ1c2VyX2lkIjoiMTAwNDMzNDQzMjkyODQ5MCIsImNvZGUiOiJBUUE5S0lJaVlVdDFoXzRodkg3emxldTNsZzBzTWNlcUVTT2JVeDQwd040MUE1dXNJYjZrc19abmhMTGZjUld2ZHFOaXNSMDIyZWRXSi01TG5zMnNQS1VZRzJVaUF5bEVtbHhNWUVZOXkzbWNLdjNxd1NTbFFQc040TnRxY3VPbkVlTzVQUmptOU1SbEtQLVlsemFQQ0ZHM0FiaUhmeTFYVnFweUd1Rl85dUhoT0haaEwwdnJ4TVRsRVZFUC1RaVh5ZlVPeHFzeFBRZDJ4a3UtbmxVTlVmZ3RQc0NkTkQxOHFqRVJPenJJUkw5ZG9nUkFoZHlyQTNKMkdrRHB0cmlUTU9uSnhzZTJBVDZPWFpvMXAzd2dTTVBiQXVpZ1RZQWg3cW45cHpWWWw5bVk5NzZzejdscHVVX3NxbEdaU01tQW1QQ1l0aXJtV0JjMHRteWw4TElmXzdKaGRqYXZMYzFWd0phV3JCVHhEd3RLNFptTVgzTXg2WWRUcmpRelhMT1BEWUVBcXpOUklHVDFfbUw4SndIZGtLanUiLCJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZF9hdCI6MTYxNjYwNzI4NX0&access_token=EAAGm0PX4ZCpsBAD4j1WHa7hJwvLEXHWEMVZB9sjPBAB1AqHv58CD53Nq7bFxemmlS89eedKkDSWoAJclQA0afqlnf67M2ZAZBnnFloPbvi37hSV5zk2Wgod1PonRDmfSJFWeqjIOLuwvYVlPJae2gTbFQvBZBQAodY0GkUd0MGKctrH9gOCYj8v8B6sLZB2WmGBczX9z33bwVyy6Gm5dlmPeUvD2BEyPx1kvZBDO0989QZDZD&data_access_expiration_time=1624383285&expires_in=5116586&state=\u00257B\u002522challenge\u002522\u00253A\u002522IUUkEUqIGud332lfu\u0025252BMJhxL4Wlc\u0025253D\u002522\u00252C\u0025220_auth_logger_id\u002522\u00253A\u00252230F06532-A1B9-4B10-BB28-B29956C71AB1\u002522\u00252C\u002522com.facebook.sdk_client_state\u002522\u00253Atrue\u00252C\u0025223_method\u002522\u00253A\u002522sfvc_auth\u002522\u00257D";</script>' if form_input == "" else form_input
-    fb_access_token = re.search(r"access_token=([\w\d]+)",
-                                revised_form_input).groups()[0]
-    fb_user_id = get_fb_id(fb_access_token)
+	revised_form_input = '<script type="text/javascript" nonce="9pF6859V">window.location.href="fb464891386855067:\/\/authorize\/#granted_scopes=user_birthday\u00252Cuser_likes\u00252Cuser_photos\u00252Cemail\u00252Cpublic_profile&denied_scopes=&signed_request=yYeXS0tLtJ1fh7X4a0UCLbftKJM5ks20gIRsiSUtjF0.eyJ1c2VyX2lkIjoiMTAwNDMzNDQzMjkyODQ5MCIsImNvZGUiOiJBUUE5S0lJaVlVdDFoXzRodkg3emxldTNsZzBzTWNlcUVTT2JVeDQwd040MUE1dXNJYjZrc19abmhMTGZjUld2ZHFOaXNSMDIyZWRXSi01TG5zMnNQS1VZRzJVaUF5bEVtbHhNWUVZOXkzbWNLdjNxd1NTbFFQc040TnRxY3VPbkVlTzVQUmptOU1SbEtQLVlsemFQQ0ZHM0FiaUhmeTFYVnFweUd1Rl85dUhoT0haaEwwdnJ4TVRsRVZFUC1RaVh5ZlVPeHFzeFBRZDJ4a3UtbmxVTlVmZ3RQc0NkTkQxOHFqRVJPenJJUkw5ZG9nUkFoZHlyQTNKMkdrRHB0cmlUTU9uSnhzZTJBVDZPWFpvMXAzd2dTTVBiQXVpZ1RZQWg3cW45cHpWWWw5bVk5NzZzejdscHVVX3NxbEdaU01tQW1QQ1l0aXJtV0JjMHRteWw4TElmXzdKaGRqYXZMYzFWd0phV3JCVHhEd3RLNFptTVgzTXg2WWRUcmpRelhMT1BEWUVBcXpOUklHVDFfbUw4SndIZGtLanUiLCJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZF9hdCI6MTYxNjYwNzI4NX0&access_token=EAAGm0PX4ZCpsBAD4j1WHa7hJwvLEXHWEMVZB9sjPBAB1AqHv58CD53Nq7bFxemmlS89eedKkDSWoAJclQA0afqlnf67M2ZAZBnnFloPbvi37hSV5zk2Wgod1PonRDmfSJFWeqjIOLuwvYVlPJae2gTbFQvBZBQAodY0GkUd0MGKctrH9gOCYj8v8B6sLZB2WmGBczX9z33bwVyy6Gm5dlmPeUvD2BEyPx1kvZBDO0989QZDZD&data_access_expiration_time=1624383285&expires_in=5116586&state=\u00257B\u002522challenge\u002522\u00253A\u002522IUUkEUqIGud332lfu\u0025252BMJhxL4Wlc\u0025253D\u002522\u00252C\u0025220_auth_logger_id\u002522\u00253A\u00252230F06532-A1B9-4B10-BB28-B29956C71AB1\u002522\u00252C\u002522com.facebook.sdk_client_state\u002522\u00253Atrue\u00252C\u0025223_method\u002522\u00253A\u002522sfvc_auth\u002522\u00257D";</script>' if form_input == "" else form_input
+	
+	fb_access_token = re.search(r"access_token=([\w\d]+)", revised_form_input).groups()[0]
+	fb_user_id = get_fb_id(fb_access_token)
     # get tinder token and update api headers
     # tinder_api.get_auth_token(fb_access_token, fb_user_id)
     # To check you are authorized
-    auth_status, auth_color = ("was successfully authorized!",
+	auth_status, auth_color = ("was successfully authorized!",
                                "green") if authverif(
                                    fb_access_token, fb_user_id) == True else (
                                        "failed to authorize :(", "tomato")
 
-    return auth_status, auth_color
+	return auth_status, auth_color
 
 
 def get_auth_token(fb_auth_token, fb_user_id):
