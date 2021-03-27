@@ -11,8 +11,12 @@ import time
 import tinder_api
 from features import *
 
+from src import diff_utils
+
 app = Flask(__name__)
 
+# Play demo of diff utils
+# diff_utils.demo()
 
 @app.route('/')
 def index():
