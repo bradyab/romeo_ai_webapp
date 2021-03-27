@@ -1,4 +1,13 @@
 <!doctype html>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/results.css') }}">
+
+<head>
+	<style>
+		.views-row.views-row-1.views-row-odd.views-row-first {
+			display: inline-block;
+		}
+	</style>
+</head>
 
 <body style="font-family: Courier New">
 	<section>
@@ -18,31 +27,36 @@
 		<br />
 		<br />
 		<h2>
-			<pre>Photo Rank     Swipe Right Rate</pre>
+			<pre>    Photo                    % of your admirers who swipe right on this picture</pre>
 		</h2>
-		<h2>
-			<pre>     <a href={{url_1}}>1</a>         {{score_1}} %</pre>
-		</h2>
-		<br />
-		<h2>
-			<pre>     <a href={{url_2}}>2</a>         {{score_2}} %</pre>
-		</h2>
-		<br />
-		<h2>
-			<pre>     <a href={{url_3}}>3</a>         {{score_3}} %</pre>
-		</h2>
-		<br />
-			<h2>
-				<pre>     <a href={{url_4}}>4</a>         {{score_4}} %</pre>
-			</h2>
-			<br />
-			<h2>
-				<pre>     <a href={{url_5}}>5</a>         {{score_5}} %</pre>
-			</h2>
-			<br />
-			<h2>
-				<pre>     <a href={{url_6}}>6</a>         {{score_6}} %</pre>
-			</h2>
+
+        <table style="width:50%">
+  <tr>
+    <td><img src="{{url_1}}" width="200" align="center"/></td>
+    <td>{{score_1}} %</td>
+  </tr>
+  <tr>
+    <td><img src="{{url_2}}" width="200" align="middle"/></td>
+    <td>{{score_2}} %</td>
+  </tr>
+  <tr>
+    <td><img src="{{url_3}}" width="200" align="middle"/></td>
+    <td>{{score_3}} %</td>
+  </tr>
+  <tr>
+    <td><img src="{{url_4}}" width="200" align="middle"/></td>
+    <td>{{score_4}} %</td>
+  </tr>
+  <tr>
+    <td><img src="{{url_5}}" width="200" align="middle"/></td>
+    <td>{{score_5}} %</td>
+  </tr>
+  <tr>
+    <td><img src="{{url_6}}" width="200" align="middle"/></td>
+    <td>{{score_6}} %</td>
+  </tr>
+</table>
+
 			<br />
 			<h1>Relative Performance of Your Opening Lines</h1>
 			<h4>0 on the y-axis is your average response rate</h4>
