@@ -10,7 +10,12 @@ import pytz
 import tinder_api
 from features import *
 
+from src import diff_utils
+
 app = Flask(__name__)
+
+# Play demo of diff utils
+# diff_utils.demo()
 
 @app.route('/')
 def index():
@@ -23,7 +28,6 @@ def submit():
 	try:
 		# authorize
 		auth_status, auth_color = tinder_api.authorize(request.form['text']) 
-
 		# save to file to reduce frequency of API calls
 		user_profile = tinder_api.get_self()
 		# TODO: verify that profile and updates is all we need to save. matches is a subset of updates i think, no need to save 
