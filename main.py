@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 import pytz
 import time
 
-import tinder_api
-from features import *
+import src.tinder_api as tinder_api
+from src.features import *
 
 from src import diff_utils
 
@@ -327,6 +327,8 @@ def submit():
                                               get_extra_match_info)
             # opener_response_rates_df["samples"] = messages_df[messages_df["is_opener"] == 1].groupby('message').size()
 
+            # matches over time
+            matches_plot = get_matches_plot(user_updates["matches"])
             # plot opener performance
             opener_plot = get_opener_plot(means_dict)
 
@@ -356,6 +358,13 @@ def submit():
             url_4=photo_scores[3]['filename'],
             url_5=photo_scores[4]['filename'],
             url_6=photo_scores[5]['filename'],
+            # label_1=photo_scores[0]['label'],
+            # label_2=photo_scores[1]['label'],
+            # label_3=photo_scores[2]['label'],
+            # label_4=photo_scores[3]['label'],
+            # label_5=photo_scores[4]['label'],
+            # label_6=photo_scores[5]['label'],
+            matches_plot=matches_plot,
             opener_plot=opener_plot,
             long_convo_word_cloud=long_convo_word_cloud,
             ghosted_word_cloud=ghosted_word_cloud,
