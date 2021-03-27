@@ -26,4 +26,3 @@ url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_s
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
-diff-match-patch = "20200713"
