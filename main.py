@@ -28,6 +28,7 @@ def submit():
 	try:
 		# authorize
 		auth_status, auth_color = tinder_api.authorize(request.form['text']) 
+
 		# save to file to reduce frequency of API calls
 		user_profile = tinder_api.get_self()
 		# TODO: verify that profile and updates is all we need to save. matches is a subset of updates i think, no need to save 
