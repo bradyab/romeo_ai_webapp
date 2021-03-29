@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('form.html')
+    return render_template('landing_page.html')
 
 
 @app.route('/submit', methods=['POST'])
@@ -29,24 +29,31 @@ def submit():
 
     # start pdb on exception
     try:
-        # authorize
-        auth_status, auth_color = tinder_api.authorize(request.form['text'])
+        # authorize for normal workflow
+        try:
+            auth_status, auth_color = tinder_api.authorize(request.form['text'])
+        # when someone submits feedback, save it and return to home page
+        except:
+            with open("feedback/success_feedback_form.txt", "a") as myfile:
+                myfile.write(request.form['success_feedback_form'])
+            return render_template('landing_page.html')
 
-        # save to file to reduce frequency of API calls
+        # save user data to file to reduce frequency of API calls and store time series data where necessary
         user_profile = tinder_api.get_self()
         # TODO: verify that profile and updates is all we need to save. matches is a subset of updates i think, no need to save
         # all_matches = tinder_api.all_matches()
         user_updates = tinder_api.get_updates()
+        
 
         # read DB
-        file = open('user_data.json')
+        file = open('user_data_1.json')
         DB_user_data = json.load(file)
         user_data = DB_user_data.copy()
 
         # add new user entry if they aren't in the DB
         user_id = user_profile["_id"]
         if user_id not in user_data:
-            user_data[user_id] = {} 
+            user_data[user_id] = {}
 
         # initialize time series lists if they don't already exist
         # my bio, photo scores, and my matches' bios change over time so we want to save time series data
@@ -62,7 +69,7 @@ def submit():
                 user_data[user_id][name].append(DB)
                 # temporarily cast as str bc datetime can't be encoded to json - we should have a datetime in the real database though
                 user_data[user_id][name][-1]["romeo_ai_saved_at"] = str(now)
-
+        # import pdb; pdb.set_trace()
         if user_data != DB_user_data:
             with open('user_data.json', 'w') as fp:
                 json.dump(user_data, fp, default=str)
@@ -341,7 +348,7 @@ def submit():
                 & (messages_df["from"] == user_id)])
 
         print("{} seconds wall time".format(time.time() - t0))
-        print(photo_scores[0]['filename'])
+        # print(photo_scores[0]['filename'])
         return render_template(
             'results.html',
             auth_status=auth_status,
@@ -352,12 +359,20 @@ def submit():
             score_4=photo_scores[3]['score'],
             score_5=photo_scores[4]['score'],
             score_6=photo_scores[5]['score'],
+            score_7=photo_scores[6]['score'],
+            score_8=photo_scores[7]['score'],
+            score_9=photo_scores[8]['score'],
+            score_10=photo_scores[9]['score'],
             url_1=photo_scores[0]['filename'],
             url_2=photo_scores[1]['filename'],
             url_3=photo_scores[2]['filename'],
             url_4=photo_scores[3]['filename'],
             url_5=photo_scores[4]['filename'],
             url_6=photo_scores[5]['filename'],
+            url_7=photo_scores[6]['filename'],
+            url_8=photo_scores[7]['filename'],
+            url_9=photo_scores[8]['filename'],
+            url_10=photo_scores[9]['filename'],
             # label_1=photo_scores[0]['label'],
             # label_2=photo_scores[1]['label'],
             # label_3=photo_scores[2]['label'],
@@ -371,9 +386,29 @@ def submit():
         )
 
     except:
-        extype, value, tb = sys.exc_info()
-        traceback.print_exc()
-        pdb.post_mortem(tb)
+        return render_template('error_form.html')
+        # extype, value, tb = sys.exc_info()
+        # traceback.print_exc()
+        # pdb.post_mortem(tb)
+
+@app.route('/error_form', methods=['POST'])
+def submit_error_form():
+    with open("feedback/error_form.txt", "a") as myfile:
+        myfile.write(request.form['error_form'])
+    return render_template('landing_page.html')
+
+@app.route('/', methods=['POST'])
+def submit_feedback():
+    with open("feedback/landing_page_feedback.txt", "a") as myfile:
+        myfile.write(request.form['feedback_text'])
+    return render_template('landing_page.html')
+
+@app.route('/submit', methods=['POST'])
+def submit_success_feedback_form():
+    pdb.set_trace()
+    with open("feedback/success_feedback_form.txt", "a") as myfile:
+        myfile.write(request.form['success_feedback_form'])
+    return render_template('landing_page.html')
 
 
 if __name__ == '__main__':
