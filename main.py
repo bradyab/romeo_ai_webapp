@@ -11,12 +11,9 @@ import time
 import src.tinder_api as tinder_api
 from src.features import *
 
-from src import diff_utils
+from src import aws_utils
 
 app = Flask(__name__)
-
-# Play demo of diff utils
-# diff_utils.demo()
 
 @app.route('/')
 def index():

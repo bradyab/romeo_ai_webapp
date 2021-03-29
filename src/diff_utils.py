@@ -41,12 +41,19 @@ def demo():
   print(text2_generated)
 
 def create_diff(originalStr, newStr) -> str:
+  # Convert surrogate pairs into single unicode points
+  originalStr = originalStr.encode('utf-16', 'surrogatepass').decode('utf-16')
+  newStr = newStr.encode('utf-16', 'surrogatepass').decode('utf-16')
+
   dmp = diff_match_patch()
   patches = dmp.patch_make(originalStr, newStr)
   diff = dmp.patch_toText(patches)
   return diff
 
 def generate_text(diff, baseText) -> str:
+  # Convert surrogate pairs into single unicode points
+  baseText = baseText.encode('utf-16', 'surrogatepass').decode('utf-16')
+
   dmp = diff_match_patch()
   patches = dmp.patch_fromText(diff)
   text_generated, _ = dmp.patch_apply(patches, baseText)
