@@ -27,7 +27,7 @@
 		<br />
 		<br />
 		<h2>
-			<pre>    Photo                    % of your admirers who swipe right on this picture</pre>
+			<pre>    Photo                    % of your admirers who swiped right</pre>
 		</h2>
 
         <table style="width:50%">
@@ -61,25 +61,49 @@
     <td>{{score_6}} %</td>
     <!-- <td>{{label_6}}</td> -->
   </tr>
+<tr>
+    <td><img src="{{url_7}}" width="200" align="middle"/></td>
+    <td>{{score_7}} %</td>
+    <!-- <td>{{label_5}}</td> -->
+  </tr>
+  <tr>
+    <td><img src="{{url_8}}" width="200" align="middle"/></td>
+    <td>{{score_8}} %</td>
+    <!-- <td>{{label_6}}</td> -->
+  </tr>
+<tr>
+    <td><img src="{{url_9}}" width="200" align="middle"/></td>
+    <td>{{score_9}} %</td>
+    <!-- <td>{{label_6}}</td> -->
+  </tr>
 </table>
 <br />
 			<h1>Your Matches Over Time</h1>
             <h4>How do I invest??</h4>
 			<img src="data:image/png;base64, {{ matches_plot }}">
 			<br />
+    <br />
 			<h1>Relative Performance of Your Opening Lines</h1>
-			<h4>0 on the y-axis is your average response rate</h4>
+			<h4>0 is your average response rate</h4>
 			<img src="data:image/png;base64, {{ opener_plot }}">
 			<br />
+    <br />
 			<h1>Word Cloud of Your Texts When You Were Ghosted</h1>
 			<h4>These may be topics to avoid in the future</h4>
 			<img src="data:image/png;base64, {{ ghosted_word_cloud }}">
 			<br />
+    <br />
 			<h1>Word Cloud of Your Longest Conversations</h1>
 			<h4>These may be topics to focus on in the future</h4>
 			<img src="data:image/png;base64, {{ long_convo_word_cloud }}">
-			<h1><a href="https://forms.gle/4kKFnHGRdFiPErJf8">Tell us what you think so we can improve Romeo.ai! :)</a>
+            <br />
+    <br />
+			<h1>Enter your thoughts below or take a <a href="https://forms.gle/4kKFnHGRdFiPErJf8">brief survey</a> so we can improve Romeo.ai! :)
 			</h1>
+            <form action="{{ url_for('submit_success_feedback_form') }}" method="post">
+      <textarea name="success_feedback_form" placeholder="My favorite part about Romeo.ai is ..." cols='50'></textarea>
+      <input type="submit">
+    </form>
 
 	</section>
 </body>

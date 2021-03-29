@@ -110,6 +110,36 @@ def get_photo_scores(user_photos):
             "filename": "",
             "labels": ""
         },
+        {
+            "url": None,
+            "score": None,
+            "filename": "",
+            "labels": ""
+        },
+        {
+            "url": None,
+            "score": None,
+            "filename": "",
+            "labels": ""
+        },
+        {
+            "url": None,
+            "score": None,
+            "filename": "",
+            "labels": ""
+        },
+        {
+            "url": None,
+            "score": None,
+            "filename": "",
+            "labels": ""
+        },
+        {
+            "url": None,
+            "score": None,
+            "filename": "",
+            "labels": ""
+        },
     ]
 
     files_deleted = False
@@ -139,8 +169,11 @@ def get_photo_scores(user_photos):
 
             score = p['score'] if "score" in p.keys() else "unknown"
             Image.open(requests.get(p['url'], stream=True).raw)
+            # print(n)
+            # if n == 6:
+            #     import pdb; pdb.set_trace()
             photo_scores[n]['url'] = p["url"]
-            photo_scores[n]['score'] = round(score * 100, 3)
+            photo_scores[n]['score'] = None if score == "unknown" else round(score * 100, 3)
             photo_scores[n]['filename'] = filename
             # photo_scores[n]['labels'] = labels
             ranking += 1
@@ -244,7 +277,7 @@ def get_opener_plot_data(messages_df, get_extra_match_info):
 
 def get_opener_plot(means_dict):
     x = [
-        key + "\n P-value: " + str(round(value[2], 3))
+        key + "\n Samples: " + str(round(value[1], 3))
         for key, value in means_dict.items()
     ]
     y = [value[0] for value in means_dict.values()]
@@ -254,7 +287,7 @@ def get_opener_plot(means_dict):
     _ = plt.bar(x, y)
     # _ = plt.xticks(rotation=45)
     _ = plt.xlabel('Opener Category')
-    _ = plt.ylabel('Response Rate: % better than your average opener')
+    _ = plt.ylabel('Response Rate vs. Your Average')
     _ = plt.savefig(img, format='png')
     _ = plt.close()
 

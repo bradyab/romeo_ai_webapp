@@ -1,0 +1,11 @@
+<body style="font-family: Courier New">
+
+    <h1>We encountered an error :(</h1>
+
+    <p>Let us know what's happening below and we can fix it!</p>
+
+    <form action="{{ url_for('submit_error_form') }}" method="post">
+      <textarea name="error_form"></textarea>
+      <input type="submit">
+    </form>
+</body>
