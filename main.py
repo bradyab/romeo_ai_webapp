@@ -43,7 +43,7 @@ def submit():
         
 
         # read DB
-        file = open('user_data_1.json')
+        file = open('user_data.json')
         DB_user_data = json.load(file)
         user_data = DB_user_data.copy()
 
@@ -71,7 +71,7 @@ def submit():
             with open('user_data.json', 'w') as fp:
                 json.dump(user_data, fp, default=str)
 
-        # # TODO: remove duplicate entries. convert to csv?
+        # TODO: remove duplicate entries. convert to csv?
         ####### requires time series saved data
 
         # def plot_gb_time_series(df, ts_name, gb_name, value_name, figsize=(20,7), title=None):
@@ -339,10 +339,13 @@ def submit():
             ##### wordclouds
             long_convo_word_cloud = make_cloud(
                 messages_df["message_lower_case"][messages_df["long_convo"] ==
-                                                  1])
+                                                  1]) if len(messages_df["message_lower_case"][messages_df["long_convo"] ==
+                                                  1]) > 1 else None
             ghosted_word_cloud = make_cloud(messages_df["message_lower_case"][
                 (messages_df["got_response"] == 0)
-                & (messages_df["from"] == user_id)])
+                & (messages_df["from"] == user_id)]) if len(messages_df["message_lower_case"][
+                (messages_df["got_response"] == 0)
+                & (messages_df["from"] == user_id)]) > 1 else None
 
         print("{} seconds wall time".format(time.time() - t0))
         # print(photo_scores[0]['filename'])
