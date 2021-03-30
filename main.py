@@ -339,13 +339,13 @@ def submit():
             ##### wordclouds
             long_convo_word_cloud = make_cloud(
                 messages_df["message_lower_case"][messages_df["long_convo"] ==
-                                                  1]) if len(messages_df["message_lower_case"][messages_df["long_convo"] ==
-                                                  1]) > 1 else None
+                                                  1]) if not messages_df["message_lower_case"][messages_df["long_convo"] ==
+                                                  1].empty else None
             ghosted_word_cloud = make_cloud(messages_df["message_lower_case"][
                 (messages_df["got_response"] == 0)
-                & (messages_df["from"] == user_id)]) if len(messages_df["message_lower_case"][
+                & (messages_df["from"] == user_id)]) if not messages_df["message_lower_case"][
                 (messages_df["got_response"] == 0)
-                & (messages_df["from"] == user_id)]) > 1 else None
+                & (messages_df["from"] == user_id)].empty else None
 
         print("{} seconds wall time".format(time.time() - t0))
         # print(photo_scores[0]['filename'])

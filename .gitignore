@@ -1,1 +1,4 @@
-*pyc
+*.pyc
+static/tmp/*
+__pycache__/*
+src/__pycache__/*
