@@ -3,8 +3,8 @@
 - Simply press "submit" on the webpage to use our demo facebook credentials, OR follow the instructions on the site if you want to integrate your own tinder account.
 
 # Development
-- The prod site is hosted [here](https://romeoai.bradyab.repl.co) (this server should be set to "always on")
-- bradyab/romeo.ai is our "prod" server, to be used for demos with customers. Please fork this repl (you'll need repl.it premium - ask Brady) and create a new branch to make changes. Only merge them back to master once you verify they don't break anything
+- Please fork this repl (you'll need repl.it premium - ask Brady) and create a new branch to make changes. Only merge them back to master once you verify they don't break anything
+- bradyab/romeo.ai, hosted [here](https://romeoai.bradyab.repl.co), is our "prod" server. It should be set to "always on" and is to be used for demos with customers. Whenever changes to master are merged, we need to deploy them by pulling the changes to that repl and rerunning 
 - The demo facebook credential string is set using the instructions given on the webpage, and is subsequently assigned to the variable form_text in `tinder_api.py` if no text box input is given. The facebook and tinder API tokens appear to be valid for a few days.
 - make a tinder account with a fake facebook acct, add some photos and a bio, and start swiping/sending messages so you have some data to play with and you can get to know your user
 - auth flow is hacky for now - We have to be careful to do any FB auth in browser to avoid people giving us their login info (security/trust hazard) and make sure we aren't incurring any facebook activity from replits servers (which, due to their obscure location, will trigger a suspicious activity FB security flag and force a password reset).
