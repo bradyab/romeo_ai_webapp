@@ -26,6 +26,7 @@ def submit():
 
     # start pdb on exception
     try:
+        get_responses()
         # authorize for normal workflow
         try:
             auth_status, auth_color = tinder_api.authorize(request.form['text'])
@@ -40,7 +41,6 @@ def submit():
         # TODO: verify that profile and updates is all we need to save. matches is a subset of updates i think, no need to save
         # all_matches = tinder_api.all_matches()
         user_updates = tinder_api.get_updates()
-        
 
         # read DB
         file = open('user_data.json')
@@ -386,10 +386,10 @@ def submit():
         )
 
     except:
-        return render_template('error_form.html')
-        # extype, value, tb = sys.exc_info()
-        # traceback.print_exc()
-        # pdb.post_mortem(tb)
+        # return render_template('error_form.html')
+        extype, value, tb = sys.exc_info()
+        traceback.print_exc()
+        pdb.post_mortem(tb)
 
 @app.route('/error_form', methods=['POST'])
 def submit_error_form():
