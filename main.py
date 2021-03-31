@@ -7,6 +7,7 @@ import sys
 from datetime import datetime, timedelta
 import pytz
 import time
+from fuzzywuzzy import fuzz
 
 import src.tinder_api as tinder_api
 from src.features import *
@@ -14,6 +15,7 @@ from src.features import *
 from src import aws_utils
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
@@ -26,10 +28,11 @@ def submit():
 
     # start pdb on exception
     try:
-        get_responses()
+        # get_responses()
         # authorize for normal workflow
         try:
-            auth_status, auth_color = tinder_api.authorize(request.form['text'])
+            auth_status, auth_color = tinder_api.authorize(
+                request.form['text'])
         # when someone submits feedback, save it and return to home page
         except:
             with open("feedback/success_feedback_form.txt", "a") as myfile:
@@ -54,15 +57,19 @@ def submit():
 
         # initialize time series lists if they don't already exist
         # my bio, photo scores, and my matches' bios change over time so we want to save time series data
-        for name, DB in {"profile": user_profile, "updates": user_updates}.items():
+        for name, DB in {
+                "profile": user_profile,
+                "updates": user_updates
+        }.items():
             if name not in user_data[user_id]:
                 user_data[user_id][name] = []
 
             # only save data if we have no data, or it's been more than a day since it was last saved
             now = datetime.now(pytz.utc)
-            if not user_data[user_id][name] or (user_data[user_id][name] and now - datetime.strptime(user_data[user_id][name][-1]["romeo_ai_saved_at"],
-                                    '%Y-%m-%d %H:%M:%S.%f%z') > timedelta(
-                                        days=1)):
+            if not user_data[user_id][name] or (
+                    user_data[user_id][name] and now - datetime.strptime(
+                        user_data[user_id][name][-1]["romeo_ai_saved_at"],
+                        '%Y-%m-%d %H:%M:%S.%f%z') > timedelta(days=1)):
                 user_data[user_id][name].append(DB)
                 # temporarily cast as str bc datetime can't be encoded to json - we should have a datetime in the real database though
                 user_data[user_id][name][-1]["romeo_ai_saved_at"] = str(now)
@@ -181,7 +188,8 @@ def submit():
                     message.update({
                         "match_name": match_name,
                         "message_lower_case": message["message"],
-                        "match_bio": match_bio
+                        "match_bio": match_bio,
+                        "user_id": user_id
                     })
                 old_messages_df = old_messages_df.append(message,
                                                          ignore_index=True)
@@ -190,9 +198,6 @@ def submit():
         if old_messages_df.empty:
             opener_plot, ghosted_word_cloud, long_convo_word_cloud = None, None, None
         else:
-            old_messages_df["romeo_ai_user_id"] = user_id
-
-            from fuzzywuzzy import fuzz
             pd.set_option('display.max_colwidth', None)
             pd.set_option('display.max_rows', None)
 
@@ -204,8 +209,7 @@ def submit():
                     "bio_ref_str"], messages_df["job_ref"], messages_df[
                         "job_ref_str"] = "", "", "", "", "", ""
 
-            grouped = messages_df.groupby(['romeo_ai_user_id',
-                                           'match_id'])  #.apply()
+            grouped = messages_df.groupby(['user_id', 'match_id'])  #.apply()
 
             bio_ngrams_n = 2
             job_ngrams_n, school_ngrams_n = 1, 1
@@ -233,7 +237,9 @@ def submit():
                             school_ngrams = make_ngrams(
                                 row["match_school"], school_ngrams_n)
 
-                        messages_df.loc[row_idx, "is_opener"] = 1 if user_id == row["from"] else 0
+                        messages_df.loc[
+                            row_idx,
+                            "is_opener"] = 1 if user_id == row["from"] else 0
 
                     convo_depth += 1
                     # if row["match_bio"] and "5 kids" in row["match_bio"]:
@@ -338,16 +344,19 @@ def submit():
 
             ##### wordclouds
             long_convo_word_cloud = make_cloud(
-                messages_df["message_lower_case"][messages_df["long_convo"] ==
-                                                  1]) if not messages_df["message_lower_case"][messages_df["long_convo"] ==
-                                                  1].empty else None
-            ghosted_word_cloud = make_cloud(messages_df["message_lower_case"][
-                (messages_df["got_response"] == 0)
-                & (messages_df["from"] == user_id)]) if not messages_df["message_lower_case"][
-                (messages_df["got_response"] == 0)
-                & (messages_df["from"] == user_id)].empty else None
+                messages_df["message_lower_case"][
+                    messages_df["long_convo"] ==
+                    1]) if not messages_df["message_lower_case"][
+                        messages_df["long_convo"] == 1].empty else None
+            ghosted_df = messages_df[(messages_df["got_response"] == 0)
+                                     & (messages_df["from"] == user_id)]
+            top_texts = analyze_text(ghosted_df)
+            ghosted_word_cloud = make_cloud(
+                ghosted_df["message_lower_case"]
+            ) if not ghosted_df["message_lower_case"].empty else None
 
         print("{} seconds wall time".format(time.time() - t0))
+        # pdb.set_trace()
         # print(photo_scores[0]['filename'])
         return render_template(
             'results.html',
@@ -379,6 +388,18 @@ def submit():
             # label_4=photo_scores[3]['label'],
             # label_5=photo_scores[4]['label'],
             # label_6=photo_scores[5]['label'],
+            sad_m=top_texts.get('Sad')["message"].item(),
+            fear_m=top_texts.get('Fear')["message"].item(),
+            angry_m=top_texts.get('Angry')["message"].item(),
+            bored_m=top_texts.get('Bored')["message"].item(),
+            sad_n=top_texts.get('Sad')["match_name"].item(),
+            fear_n=top_texts.get('Fear')["match_name"].item(),
+            angry_n=top_texts.get('Angry')["match_name"].item(),
+            bored_n=top_texts.get('Bored')["match_name"].item(),
+            sad_s=round(top_texts.get('Sad')["Sad"].item() * 100, 3),
+            fear_s=round(top_texts.get('Fear')["Fear"].item() * 100, 3),
+            angry_s=round(top_texts.get('Angry')["Angry"].item() * 100, 3),
+            bored_s=round(top_texts.get('Bored')["Bored"].item() * 100, 3),
             matches_plot=matches_plot,
             opener_plot=opener_plot,
             long_convo_word_cloud=long_convo_word_cloud,
@@ -391,17 +412,20 @@ def submit():
         traceback.print_exc()
         pdb.post_mortem(tb)
 
+
 @app.route('/error_form', methods=['POST'])
 def submit_error_form():
     with open("feedback/error_form.txt", "a") as myfile:
         myfile.write(request.form['error_form'])
     return render_template('landing_page.html')
 
+
 @app.route('/', methods=['POST'])
 def submit_feedback():
     with open("feedback/landing_page_feedback.txt", "a") as myfile:
         myfile.write(request.form['feedback_text'])
     return render_template('landing_page.html')
+
 
 @app.route('/submit', methods=['POST'])
 def submit_success_feedback_form():

@@ -18,20 +18,22 @@ import string
 import numpy as np
 import math
 import scipy.stats
+import paralleldots
+
 
 def reformat_timestamp(timestamp, format_contains_T, format_contains_Z=True):
     t = "T" if format_contains_T else " "
     # was getting error
-    #   File "main.py", line 63, in submit
-    #     if not user_data[user_id][name] or (user_data[user_id][name] and now - reformat_timestamp(user_data[user_id][name][-1]["romeo_ai_saved_at"].split("+")[0], False) > timedelta(days=1)):
+    #	 File "main.py", line 63, in submit
+    #		 if not user_data[user_id][name] or (user_data[user_id][name] and now - reformat_timestamp(user_data[user_id][name][-1]["romeo_ai_saved_at"].split("+")[0], False) > timedelta(days=1)):
     # TypeError: can't subtract offset-naive and offset-aware datetimes
     z = "%z" if format_contains_Z else ""
     return datetime.strptime(timestamp, '%Y-%m-%d' + t + '%H:%M:%S.%f')
 
 
 def get_responses():
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-    import torch
+    # from transformers import AutoModelForCausalLM, AutoTokenizer
+    # import torch
 
     tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-large")
     model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-large")
@@ -39,26 +41,178 @@ def get_responses():
     # Let's chat for 5 lines
     for step in range(5):
         # encode the new user input, add the eos_token and return a tensor in Pytorch
-        new_user_input_ids = tokenizer.encode(input(">> User:") + tokenizer.eos_token, return_tensors='pt')
+        new_user_input_ids = tokenizer.encode(input(">> User:") +
+                                              tokenizer.eos_token,
+                                              return_tensors='pt')
 
         # append the new user input tokens to the chat history
-        bot_input_ids = torch.cat(["what's up", new_user_input_ids], dim=-1) if step > 0 else new_user_input_ids
+        bot_input_ids = torch.cat(["what's up", new_user_input_ids],
+                                  dim=-1) if step > 0 else new_user_input_ids
 
-        # generated a response while limiting the total chat history to 1000 tokens, 
-        chat_history_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
+        # generated a response while limiting the total chat history to 1000 tokens,
+        chat_history_ids = model.generate(bot_input_ids,
+                                          max_length=1000,
+                                          pad_token_id=tokenizer.eos_token_id)
 
         # pretty print last ouput tokens from bot
-        print("DialoGPT: {}".format(tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)))
+        print("DialoGPT: {}".format(
+            tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0],
+                             skip_special_tokens=True)))
 
 
+def analyze_text(df):  #url, path):
+    api_key = "ugNAuLVAjWwYQDryjgiphySToJI47LozLJOvSZ62syQ"
+    paralleldots.set_api_key(api_key)
+    print("API Key: {}".format(paralleldots.get_api_key()))
+
+    text = df["message_lower_case"].head(20).tolist()
+    response = paralleldots.batch_emotion(text)
+
+    # Mapping the dictionary keys to the data frame.
+    mapped_emotions = {}
+    for emotion in response["emotion"][0].keys():
+        for i in range(len(response["emotion"])):
+            string = text[i]
+            mapped_emotions.update(
+                {string: response["emotion"][i].get(emotion)})
+
+        df[emotion] = df["message_lower_case"].map(mapped_emotions)
+
+    import pdb
+
+    top_texts = {}
+    for emotion in response["emotion"][0].keys():
+        # pdb.set_trace()
+        idxmax = df[emotion].idxmax()
+        top_texts.update({
+            emotion:
+            df[["match_name", "message", emotion]][df.index == idxmax]
+        })
+
+    return top_texts
+
+# text			= "Chipotle in the north of Chicago is a nice outlet. I went to this place for their famous burritos but fell in love with their healthy avocado salads. Our server Jessica was very helpful. Will pop in again soon!"
+
+
+# >>> path			= "/path/to/image.jpg"
+# >>> lang_code = "fr"
+# >>> aspect		= "food"
+# >>> lang_text = "C'est un environnement très hostile, si vous choisissez de débattre ici, vous serez vicieusement attaqué par l'opposition."
+# >>> category	= [ "travel","food","shopping", "market" ]
+# >>> url			 = "http://i.imgur.com/klb812s.jpg"
+# >>> data			=	[ "I like walking in the park", "Don't repeat the same thing over and over!", "This new Liverpool team is not bad", "I have a throat infection" ]
+
+# print( "\nAbuse" )
+# print(paralleldots.abuse( text ))
+
+# >>> print( "\nBatch Abuse" )
+# >>> paralleldots.batch_abuse( data )
+
+# >>> print( "\nCustom Classifier" )
+# >>> paralleldots.custom_classifier( text, category )
+
+# >>> print( "\nEmotion" )
+# >>> paralleldots.emotion( text )
+
+# >>> print( "\nBatch Emotion" )
+# >>> paralleldots.batch_emotion( data )
+
+# >>> print( "\nEmotion - Lang: Fr". )
+# >>> paralleldots.emotion( lang_text, lang_code )
+
+# >>> print( "\nSarcasm - Lang: Fr" )
+# >>> paralleldots.sarcasm( lang_text,lang_code )
+
+# >>> print( "\nSarcasm" )
+# >>> paralleldots.sarcasm( text)
+
+# >>> print( "\nBatch Sarcasm" )
+# >>> paralleldots.batch_sarcasm( data )
+
+# print( "\nFacial Emotion" )
+# # import pdb
+# # pdb.set_trace()
+# paralleldots.facial_emotion("/home/runner/romeoai-brady/" + path)
+
+# print( "\nFacial Emotion: URL Method" )
+# import pdb
+# pdb.set_trace()
+# print(paralleldots.facial_emotion_url(url))
+
+# >>> print( "\nIntent" )
+# >>> paralleldots.intent( text )
+
+# >>> print( "\nBatch Intent" )
+# >>> paralleldots.batch_intent( data )
+
+# >>> print( "\nKeywords" )
+# >>> paralleldots.keywords( text )
+
+# >>> print( "\nBatch Keywords" )
+# >>> paralleldots.batch_keywords( data )
+
+# >>> print( "\nLanguage Detection" )
+# >>> paralleldots.language_detection( lang_text )
+
+# >>> print( "\nBatch Language Detection" )
+# >>> paralleldots.batch_language_detection( data )
+
+# >>> print( "\nMultilang Keywords - Lang: fr". )
+# >>> paralleldots.multilang_keywords( lang_text, lang_code )
+
+# >>> print( "\nNER" )
+# >>> paralleldots.ner( text )
+
+# >>> print( "\nNER - Lang: es" )
+# >>> paralleldots.ner( "Lionel Andrés Messi vuelve a ser el gran protagonista en las portadas de la prensa deportiva internacional al día siguiente de un partido de Champions.","es" )
+
+# >>> print( "\nBatch NER" )
+# # >>> paralleldots.batch_ner( data )
+# 	print( "\nObject Recognizer" )
+# 	paralleldots.object_recognizer( path )
+
+# print( "\nObject Recognizer: URL Method" )
+# print(paralleldots.object_recognizer_url( url ))
+
+# >>> print( "\nPhrase Extractor" )
+# >>> paralleldots.phrase_extractor( text )
+
+# >>> print( "\nBatch Phrase Extractor" )
+# >>> paralleldots.batch_phrase_extractor( data )
+
+# >>> print( "\nSentiment" )
+# >>> paralleldots.sentiment( text )
+
+# >>> print( "\nTarget Sentiment" )
+# >>> paralleldots.target_sentiment( text, aspect )
+
+# >>> print( "\nBatch Sentiment" )
+# >>> paralleldots.batch_sentiment( data )
+
+# >>> print( "\nSentiment - Lang: Fr". )
+# >>> paralleldots.sentiment( lang_text, lang_code )
+
+# >>> print( "\nSimilarity" )
+# >>> paralleldots.similarity( "I love fish and ice cream!", "fish and ice cream are the best!" )
+
+# >>> print( "\nTaxonomy" )
+# >>> paralleldots.taxonomy( text )
+
+# >>> print( "\nBatch Taxonomy" )
+# >>> paralleldots.batch_taxonomy( data )
+
+# >>> paralleldots.usage()
 
 sp = spacy.load('en_core_web_sm')
 stop_words = sp.Defaults.stop_words | set(["", " "])
 
+
 def get_matches_plot(matches):
     x, y, n = [], [], 1
     for match in matches:
-        x.append(datetime.strptime(match.get("created_date"), '%Y-%m-%dT%H:%M:%S.%f%z'))
+        x.append(
+            datetime.strptime(match.get("created_date"),
+                              '%Y-%m-%dT%H:%M:%S.%f%z'))
         y.append(n)
         n += 1
 
@@ -75,36 +229,37 @@ def get_matches_plot(matches):
     img.seek(0)
 
     return base64.b64encode(img.getvalue()).decode('utf8')
-    
+
 
 # def detect_labels_uri(uri):
-#     """Detects labels in the file located in Google Cloud Storage or on the
-#     Web."""
-#     from google.cloud import vision
-#     client = vision.ImageAnnotatorClient()
-#     image = vision.Image()
-#     image.source.image_uri = uri
+#		 """Detects labels in the file located in Google Cloud Storage or on the
+#		 Web."""
+#		 from google.cloud import vision
+#		 client = vision.ImageAnnotatorClient()
+#		 image = vision.Image()
+#		 image.source.image_uri = uri
 
-#     response = client.label_detection(image=image)
-#     labels = response.label_annotations
-#     print('Labels:')
+#		 response = client.label_detection(image=image)
+#		 labels = response.label_annotations
+#		 print('Labels:')
 
-#     for label in labels:
-#         print(label.description)
-    
-#     labels_joined = ""
-#     labels_joined += " ".join(labels) + " "
+#		 for label in labels:
+#				 print(label.description)
 
-#     if response.error.message:
-#         raise Exception(
-#             '{}\nFor more info on error messages, check: '
-#             'https://cloud.google.com/apis/design/errors'.format(
-#                 response.error.message))
+#		 labels_joined = ""
+#		 labels_joined += " ".join(labels) + " "
 
-#     return labels_joined
+#		 if response.error.message:
+#				 raise Exception(
+#						 '{}\nFor more info on error messages, check: '
+#						 'https://cloud.google.com/apis/design/errors'.format(
+#								 response.error.message))
+
+#		 return labels_joined
+
 
 def get_photo_scores(user_photos):
-    ranking = 0
+    photos_evaluated = 0
     num_non_photos = 0
     photo_scores = [
         {
@@ -177,7 +332,8 @@ def get_photo_scores(user_photos):
 
     files_deleted = False
 
-    while ranking < len(user_photos) - num_non_photos:
+    # is this while loop necessary?
+    while photos_evaluated + num_non_photos < len(user_photos):
         for n, p in enumerate(user_photos):
             if p['type'] != 'image':
                 num_non_photos += 1
@@ -195,21 +351,26 @@ def get_photo_scores(user_photos):
 
                 # download photos
                 response = requests.get(p["url"])
+                # may need to create /tmp folder if it doesn't exist
                 with open(filename, "wb") as f:
                     f.write(response.content)
-            
+
             # labels = detect_labels_uri(p['url'])
 
             score = p['score'] if "score" in p.keys() else "unknown"
             Image.open(requests.get(p['url'], stream=True).raw)
             # print(n)
             # if n == 6:
-            #     import pdb; pdb.set_trace()
+            #		 import pdb; pdb.set_trace()
             photo_scores[n]['url'] = p["url"]
-            photo_scores[n]['score'] = None if score == "unknown" else round(score * 100, 3)
+            # print(p["url"])
+            # print(requests.post( "https://apis.paralleldots.com/v4/facial_emotion", data={ "api_key": api_key ,"url": p["url"]}).text)
+            # analyze_pic(p["url"], filename)
+            photo_scores[n]['score'] = None if score == "unknown" else round(
+                score * 100, 3)
             photo_scores[n]['filename'] = filename
             # photo_scores[n]['labels'] = labels
-            ranking += 1
+            photos_evaluated += 1
 
     # photo_scores_ordered = []
     # for photo in photo_scores:
@@ -330,7 +491,7 @@ def get_opener_plot(means_dict):
     # ax = fig.add_subplot(111)
     # ax)
     # for value in means_dict.values():
-    #     ax.text(x + 3, y + .25, "P-value: " + str(value[2]), color='blue', fontweight='bold')
+    #		 ax.text(x + 3, y + .25, "P-value: " + str(value[2]), color='blue', fontweight='bold')
 
     return base64.b64encode(img.getvalue()).decode('utf8')
 
