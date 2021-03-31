@@ -351,7 +351,9 @@ def get_photo_scores(user_photos):
 
                 # download photos
                 response = requests.get(p["url"])
-                # may need to create /tmp folder if it doesn't exist
+                # create /tmp folder if it doesn't exist
+                if not os.path.exists('static/tmp'):
+                    os.makedirs('static/tmp')
                 with open(filename, "wb") as f:
                     f.write(response.content)
 
