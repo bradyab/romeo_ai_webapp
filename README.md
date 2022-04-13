@@ -1,3 +1,12 @@
+# Overview
+
+This webapp integrates with your Tinder account to give you profile tips, stat tracking, and strategies to up your game. To date, it: 
+- provides a breakdown of the swipe-right-rates of all your profile pictures
+- performs sentiment analysis on messages when you were ghosted
+- identifies frequent coversation topics 1) when you had extended conversation with matches, and 2) when you were ghosted by matches
+- calculates opening line response rates for specific opening lines and categories of opening lines like "references match's bio/job/school" 
+
+
 # Running the App on Repl.it
 - Hit run. A console and rendering of the site should pop up on the right. If you make code changes, you need to re-run (Cmd+Enter) then refresh the site preview panel
 - Simply press "submit" on the webpage to use our demo facebook credentials, OR follow the instructions on the site if you want to integrate your own tinder account.
